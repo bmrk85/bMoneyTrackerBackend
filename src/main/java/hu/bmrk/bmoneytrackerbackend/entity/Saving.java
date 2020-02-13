@@ -31,7 +31,7 @@ public class Saving {
 
     @JsonBackReference
     @ManyToOne
-    private Users users;
+    private UserEntity userEntity;
 
 
 

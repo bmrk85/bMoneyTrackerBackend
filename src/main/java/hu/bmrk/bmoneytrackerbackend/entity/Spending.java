@@ -31,7 +31,7 @@ public class Spending {
 
     @JsonBackReference
     @ManyToOne
-    private Users users;
+    private UserEntity userEntity;
 
 
 

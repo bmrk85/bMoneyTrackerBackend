@@ -13,8 +13,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Table(name = "users")
-public class Users {
+@Table(name = "userEntity")
+public class UserEntity {
 
     @Id
     @GeneratedValue
@@ -24,13 +24,13 @@ public class Users {
 
     private String password;//todo titkosítás
 
-    @OneToMany(mappedBy = "users")
+    @OneToMany(mappedBy = "userEntity")
     private List<Spending> spendings;
 
-    @OneToMany(mappedBy = "users")
+    @OneToMany(mappedBy = "userEntity")
     private List<Saving> savings;
 
-    @OneToMany(mappedBy = "users")
+    @OneToMany(mappedBy = "userEntity")
     private List<Income> incomes;
 
 

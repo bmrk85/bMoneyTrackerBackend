@@ -29,7 +29,7 @@ public class Income {
 
     @JsonBackReference
     @ManyToOne
-    private Users users;
+    private UserEntity userEntity;
 
 
 }
