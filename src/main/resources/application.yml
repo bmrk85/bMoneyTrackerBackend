@@ -10,3 +10,5 @@ spring:
     username: postgres
     password: postgres
     initialization-mode: never
+jwt:
+  secret: bmoneytracker

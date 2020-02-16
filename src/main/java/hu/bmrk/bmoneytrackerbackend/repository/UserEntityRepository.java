@@ -9,6 +9,7 @@ public interface UserEntityRepository extends JpaRepository<UserEntity, Long> {
 
     UserEntity findFirstById(Long id);
 
+    UserEntity findByUname(String uname);
 
 
 }

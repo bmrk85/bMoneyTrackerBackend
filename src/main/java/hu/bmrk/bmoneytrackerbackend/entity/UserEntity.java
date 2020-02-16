@@ -16,6 +16,12 @@ import java.util.List;
 @Table(name = "userEntity")
 public class UserEntity {
 
+
+    public UserEntity(String uname, String password) {
+        this.uname = uname;
+        this.password = password;
+    }
+
     @Id
     @GeneratedValue
     private Long id;
