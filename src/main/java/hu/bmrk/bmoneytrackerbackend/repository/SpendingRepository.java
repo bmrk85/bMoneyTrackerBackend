@@ -1,11 +1,14 @@
-package hu.bmrk.bmoneytrackerbackend.service.interfaces;
+package hu.bmrk.bmoneytrackerbackend.repository;
 
 import hu.bmrk.bmoneytrackerbackend.entity.Spending;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
 
-public interface SpendingService {
+@Repository
+public interface SpendingRepository extends JpaRepository<Spending, Long> {
 
     Spending findFirstByIdAndUserEntity_Id(Long id, Long userId);
 
@@ -14,7 +17,5 @@ public interface SpendingService {
     List<Spending> findAllByDateBetweenAndUserEntity_Id(Date timeFrom, Date timeTo, Long userId);
 
     void deleteSpendingById(Long id);
-
-    Spending saveSpending(Spending s);
 
 }

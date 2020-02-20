@@ -1,11 +1,14 @@
-package hu.bmrk.bmoneytrackerbackend.service.interfaces;
+package hu.bmrk.bmoneytrackerbackend.repository;
 
 import hu.bmrk.bmoneytrackerbackend.entity.Income;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
 
-public interface IncomeService {
+@Repository
+public interface IncomeRepository extends JpaRepository<Income,Long> {
 
     Income findFirstByIdAndUserEntity_Id(Long id, Long userId);
 
@@ -14,8 +17,6 @@ public interface IncomeService {
     List<Income> findAllByDateBetweenAndUserEntity_Id(Date timeFrom, Date timeTo, Long userId);
 
     void deleteIncomeById(Long id);
-
-    Income saveIncome(Income income);
 
 
 }

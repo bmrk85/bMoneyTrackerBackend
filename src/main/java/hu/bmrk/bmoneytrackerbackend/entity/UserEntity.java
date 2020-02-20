@@ -28,7 +28,7 @@ public class UserEntity {
 
     private String uname;
 
-    private String password;//todo titkosítás
+    private String password;
 
     @OneToMany(mappedBy = "userEntity")
     private List<Spending> spendings;
