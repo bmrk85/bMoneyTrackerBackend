@@ -1,5 +1,6 @@
 package hu.bmrk.bmoneytrackerbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,8 +18,8 @@ import java.util.List;
 public class UserEntity {
 
 
-    public UserEntity(String uname, String password) {
-        this.uname = uname;
+    public UserEntity(String username, String password) {
+        this.username = username;
         this.password = password;
     }
 
@@ -26,16 +27,20 @@ public class UserEntity {
     @GeneratedValue
     private Long id;
 
-    private String uname;
+    @Column(unique = true)
+    private String username;
 
     private String password;
 
+    @JsonManagedReference("user-spendings")
     @OneToMany(mappedBy = "userEntity")
     private List<Spending> spendings;
 
+    @JsonManagedReference("user-savings")
     @OneToMany(mappedBy = "userEntity")
     private List<Saving> savings;
 
+    @JsonManagedReference("user-incomes")
     @OneToMany(mappedBy = "userEntity")
     private List<Income> incomes;
 

@@ -13,6 +13,8 @@ public interface IncomeService {
 
     List<Income> findAllByDateBetweenAndUserEntity_Id(Date timeFrom, Date timeTo, Long userId);
 
+    List<Income> findAllByCategory_Title(String title);
+
     void deleteIncomeById(Long id);
 
     Income saveIncome(Income income);

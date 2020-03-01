@@ -24,7 +24,9 @@ public class Spending {
     @GeneratedValue
     private Long id;
 
-    private String category;
+    @JsonBackReference("category-spendings")
+    @ManyToOne
+    private Category category;
 
     private int amount;
 
@@ -32,7 +34,7 @@ public class Spending {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private Date date;
 
-    @JsonBackReference
+    @JsonBackReference("user-spendings")
     @ManyToOne
     private UserEntity userEntity;
 

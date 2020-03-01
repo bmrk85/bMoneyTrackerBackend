@@ -13,6 +13,8 @@ public interface SpendingService {
 
     List<Spending> findAllByDateBetweenAndUserEntity_Id(Date timeFrom, Date timeTo, Long userId);
 
+    List<Spending> findAllByCategory_Title(String title);
+
     void deleteSpendingById(Long id);
 
     Spending saveSpending(Spending s);

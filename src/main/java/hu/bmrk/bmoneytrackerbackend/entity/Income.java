@@ -22,7 +22,9 @@ public class Income {
     @GeneratedValue
     private Long id;
 
-    private String category;
+    @JsonBackReference("category-incomes")
+    @ManyToOne
+    private Category category;
 
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
@@ -30,7 +32,7 @@ public class Income {
 
     private int amount;
 
-    @JsonBackReference
+    @JsonBackReference("user-incomes")
     @ManyToOne
     private UserEntity userEntity;
 

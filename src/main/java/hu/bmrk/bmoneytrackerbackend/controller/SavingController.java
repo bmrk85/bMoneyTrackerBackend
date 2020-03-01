@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -26,8 +27,12 @@ public class SavingController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<List<Saving>> getSavings(@RequestBody Long userId) {
-        return new ResponseEntity<>(savingService.findAllByUserEntity_Id(userId), HttpStatus.OK);
+    public ResponseEntity<List<SavingDTO>> getSavings(@RequestBody Long userId) {
+        List<SavingDTO> savingDTOS = new ArrayList<>();
+        for (Saving s : savingService.findAllByUserEntity_Id(userId)) {
+            savingDTOS.add(modelMapper.map(s, SavingDTO.class));
+        }
+        return new ResponseEntity<>(savingDTOS, HttpStatus.OK);
     }
 
     @GetMapping(
@@ -35,8 +40,10 @@ public class SavingController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Saving> getSavingById(@PathVariable Long id, @RequestBody Long userId) {
-        return new ResponseEntity<>(savingService.findFirstByIdAndUserEntity_Id(id, userId), HttpStatus.OK);
+    public ResponseEntity<SavingDTO> getSavingById(@PathVariable Long id, @RequestBody Long userId) {
+        return new ResponseEntity<>(modelMapper.map(
+                savingService.findFirstByIdAndUserEntity_Id(id, userId), SavingDTO.class
+        ), HttpStatus.OK);
     }
 
     @PostMapping(
@@ -44,8 +51,9 @@ public class SavingController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Saving> createSaving(@RequestBody SavingDTO saving) {
-        return new ResponseEntity<>(savingService.saveSaving(modelMapper.map(saving, Saving.class)), HttpStatus.OK);
+    public ResponseEntity<SavingDTO> createSaving(@RequestBody SavingDTO saving) {
+        savingService.saveSaving(modelMapper.map(saving, Saving.class));
+        return new ResponseEntity<>(saving, HttpStatus.OK);
     }
 
     @PostMapping(path = "/delete/{id}")

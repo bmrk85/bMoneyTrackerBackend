@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -28,8 +29,12 @@ public class IncomeController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<List<Income>> getIncomes(@RequestBody Long userId) {
-        return new ResponseEntity<>(incomeService.findAllByUserEntity_Id(userId), HttpStatus.OK);
+    public ResponseEntity<List<IncomeDTO>> getIncomes(@RequestBody Long userId) {
+        List<IncomeDTO> incomeDTOS = new ArrayList<>();
+        for (Income i : incomeService.findAllByUserEntity_Id(userId)) {
+            incomeDTOS.add(modelMapper.map(i, IncomeDTO.class));
+        }
+        return new ResponseEntity<>(incomeDTOS, HttpStatus.OK);
     }
 
     @GetMapping(
@@ -37,8 +42,8 @@ public class IncomeController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Income> getIncomeById(@PathVariable Long id, @RequestBody Long userId) {
-        return new ResponseEntity<>(incomeService.findFirstByIdAndUserEntity_Id(id, userId), HttpStatus.OK);
+    public ResponseEntity<IncomeDTO> getIncomeById(@PathVariable Long id, @RequestBody Long userId) {
+        return new ResponseEntity<>(modelMapper.map(incomeService.findFirstByIdAndUserEntity_Id(id, userId), IncomeDTO.class), HttpStatus.OK);
     }
 
     @GetMapping(
@@ -46,11 +51,15 @@ public class IncomeController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<List<Income>> getSpedingsBetween(
+    public ResponseEntity<List<IncomeDTO>> getSpedingsBetween(
             @RequestBody OwnDateUtil date,
             @PathVariable Long userId
     ) {
-        return new ResponseEntity<>(incomeService.findAllByDateBetweenAndUserEntity_Id(date.getDateFrom(), date.getDateTo(), userId), HttpStatus.OK);
+        List<IncomeDTO> incomeDTOS = new ArrayList<>();
+        for(Income i : incomeService.findAllByDateBetweenAndUserEntity_Id(date.getDateFrom(), date.getDateTo(), userId)){
+            incomeDTOS.add(modelMapper.map(i,IncomeDTO.class));
+        }
+        return new ResponseEntity<>(incomeDTOS, HttpStatus.OK);
     }
 
     @PostMapping(
@@ -58,8 +67,9 @@ public class IncomeController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Income> createIncome(@RequestBody IncomeDTO income) {
-        return new ResponseEntity<>(incomeService.saveIncome(modelMapper.map(income, Income.class)), HttpStatus.OK);
+    public ResponseEntity<IncomeDTO> createIncome(@RequestBody IncomeDTO income) {
+        incomeService.saveIncome(modelMapper.map(income, Income.class));
+        return new ResponseEntity<>(income, HttpStatus.OK);
     }
 
     @PostMapping(path = "/delete/{id}")

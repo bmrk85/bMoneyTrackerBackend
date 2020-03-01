@@ -18,7 +18,7 @@ public class UserEntityDTO {
 
     private Long id;
 
-    private String uname;
+    private String username;
 
     private List<Spending> spendings;
 

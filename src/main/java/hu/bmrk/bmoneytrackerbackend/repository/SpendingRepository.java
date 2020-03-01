@@ -16,6 +16,6 @@ public interface SpendingRepository extends JpaRepository<Spending, Long> {
 
     List<Spending> findAllByDateBetweenAndUserEntity_Id(Date timeFrom, Date timeTo, Long userId);
 
-    void deleteSpendingById(Long id);
+    List<Spending> findAllByCategory_Title(String title);
 
 }

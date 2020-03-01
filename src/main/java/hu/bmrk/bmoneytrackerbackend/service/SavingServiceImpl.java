@@ -26,6 +26,11 @@ public class SavingServiceImpl implements SavingService {
     }
 
     @Override
+    public List<Saving> findAllByCategory_Title(String title) {
+        return savingRepository.findAllByCategory_Title(title);
+    }
+
+    @Override
     public void deleteSavingById(Long id) {
         savingRepository.deleteById(id);
     }

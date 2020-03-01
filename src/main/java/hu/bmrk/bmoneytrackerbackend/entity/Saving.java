@@ -34,9 +34,11 @@ public class Saving {
 
     private int amount;
 
-    private String category;
+    @JsonBackReference("category-savings")
+    @ManyToOne
+    private Category category;
 
-    @JsonBackReference
+    @JsonBackReference("user-savings")
     @ManyToOne
     private UserEntity userEntity;
 

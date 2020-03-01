@@ -1,9 +1,9 @@
 package hu.bmrk.bmoneytrackerbackend.controller;
 
 import hu.bmrk.bmoneytrackerbackend.entity.DTO.SpendingDTO;
-import hu.bmrk.bmoneytrackerbackend.util.OwnDateUtil;
 import hu.bmrk.bmoneytrackerbackend.entity.Spending;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.SpendingService;
+import hu.bmrk.bmoneytrackerbackend.util.OwnDateUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -27,8 +28,12 @@ public class SpendingController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<List<Spending>> getSpendings(@RequestBody Long userId) {
-        return new ResponseEntity<>(spendingService.findAllByUserEntity_Id(userId), HttpStatus.OK);
+    public ResponseEntity<List<SpendingDTO>> getSpendings(@RequestBody Long userId) {
+        List<SpendingDTO> spendingDTOS = new ArrayList<>();
+        for (Spending s : spendingService.findAllByUserEntity_Id(userId)) {
+            spendingDTOS.add(modelMapper.map(s, SpendingDTO.class));
+        }
+        return new ResponseEntity<>(spendingDTOS, HttpStatus.OK);
     }
 
     @GetMapping(
@@ -36,8 +41,10 @@ public class SpendingController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Spending> getSpendingById(@PathVariable Long id, @RequestBody Long userId) {
-        return new ResponseEntity<>(spendingService.findFirstByIdAndUserEntity_Id(id, userId), HttpStatus.OK);
+    public ResponseEntity<SpendingDTO> getSpendingById(@PathVariable Long id, @RequestBody Long userId) {
+        return new ResponseEntity<>(modelMapper.map(
+                spendingService.findFirstByIdAndUserEntity_Id(id, userId),SpendingDTO.class
+        ), HttpStatus.OK);
     }
 
     @GetMapping(
@@ -45,11 +52,15 @@ public class SpendingController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<List<Spending>> getSpedingsBetween(
+    public ResponseEntity<List<SpendingDTO>> getSpedingsBetween(
             @RequestBody OwnDateUtil date,
             @PathVariable Long userId
     ) {
-        return new ResponseEntity<>(spendingService.findAllByDateBetweenAndUserEntity_Id(date.getDateFrom(), date.getDateTo(), userId), HttpStatus.OK);
+        List<SpendingDTO> spendingDTOS = new ArrayList<>();
+        for(Spending s : spendingService.findAllByDateBetweenAndUserEntity_Id(date.getDateFrom(), date.getDateTo(), userId)){
+            spendingDTOS.add(modelMapper.map(s, SpendingDTO.class));
+        }
+        return new ResponseEntity<>(spendingDTOS, HttpStatus.OK);
     }
 
     @PostMapping(
@@ -57,8 +68,9 @@ public class SpendingController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Spending> createSpending(@RequestBody SpendingDTO spending) {
-        return new ResponseEntity<>(spendingService.saveSpending(modelMapper.map(spending, Spending.class)), HttpStatus.OK);
+    public ResponseEntity<SpendingDTO> createSpending(@RequestBody SpendingDTO spending) {
+        spendingService.saveSpending(modelMapper.map(spending, Spending.class));
+        return new ResponseEntity<>(spending, HttpStatus.OK);
     }
 
     @PostMapping(path = "/delete/{id}")

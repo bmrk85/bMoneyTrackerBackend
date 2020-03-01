@@ -13,7 +13,7 @@ public interface SavingRepository extends JpaRepository<Saving,Long> {
 
     List<Saving> findAllByUserEntity_Id(Long userId);
 
-    void deleteSavingById(Long id);
+    List<Saving> findAllByCategory_Title(String title);
 
 
 }

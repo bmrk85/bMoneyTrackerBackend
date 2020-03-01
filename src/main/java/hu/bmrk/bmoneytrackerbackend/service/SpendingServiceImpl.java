@@ -31,6 +31,11 @@ public class SpendingServiceImpl implements SpendingService {
     }
 
     @Override
+    public List<Spending> findAllByCategory_Title(String title) {
+        return spendingRepository.findAllByCategory_Title(title);
+    }
+
+    @Override
     public void deleteSpendingById(Long id) {
         spendingRepository.deleteById(id);
     }

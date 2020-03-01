@@ -31,6 +31,11 @@ public class IncomeServiceImpl implements IncomeService {
     }
 
     @Override
+    public List<Income> findAllByCategory_Title(String title) {
+        return incomeRepository.findAllByCategory_Title(title);
+    }
+
+    @Override
     public void deleteIncomeById(Long id) {
         incomeRepository.deleteById(id);
     }

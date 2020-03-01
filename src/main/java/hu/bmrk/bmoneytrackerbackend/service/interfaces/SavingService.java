@@ -10,6 +10,8 @@ public interface SavingService {
 
     List<Saving> findAllByUserEntity_Id(Long userId);
 
+    List<Saving> findAllByCategory_Title(String title);
+
     void deleteSavingById(Long id);
 
     Saving saveSaving(Saving s);

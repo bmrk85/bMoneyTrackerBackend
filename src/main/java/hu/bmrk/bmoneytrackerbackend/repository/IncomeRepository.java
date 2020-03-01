@@ -16,7 +16,8 @@ public interface IncomeRepository extends JpaRepository<Income,Long> {
 
     List<Income> findAllByDateBetweenAndUserEntity_Id(Date timeFrom, Date timeTo, Long userId);
 
-    void deleteIncomeById(Long id);
+    List<Income> findAllByCategory_Title(String title);
+
 
 
 }
