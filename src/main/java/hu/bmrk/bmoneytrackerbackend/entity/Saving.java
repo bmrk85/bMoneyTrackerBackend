@@ -1,6 +1,7 @@
 package hu.bmrk.bmoneytrackerbackend.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,13 +24,21 @@ public class Saving {
 
     private String name;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private Date dateFrom;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private Date dateTo;
 
     private int amount;
 
-    @JsonBackReference
+    @JsonBackReference("category-savings")
+    @ManyToOne
+    private Category category;
+
+    @JsonBackReference("user-savings")
     @ManyToOne
     private UserEntity userEntity;
 

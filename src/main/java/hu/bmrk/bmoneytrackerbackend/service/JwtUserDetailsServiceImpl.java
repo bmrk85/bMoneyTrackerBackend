@@ -24,17 +24,17 @@ public class JwtUserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-        UserEntity user = userEntityRepository.findByUname(name);
+        UserEntity user = userEntityRepository.findByUsername(name);
         if(user == null){
-            throw new UsernameNotFoundException("Invalid username or password");
+            throw new UsernameNotFoundException("User not found with these credentials.");
         }else{
-            return new User(user.getUname(), user.getPassword(), Collections.emptyList());//TODO: role mapping
+            return new User(user.getUsername(), user.getPassword(), Collections.emptyList());//TODO: role mapping
         }
     }
 
     public UserEntity save(UserEntity user){
         UserEntity newUser = new UserEntity();
-        newUser.setUname(user.getUname());
+        newUser.setUsername(user.getUsername());
         newUser.setPassword(passwordEncoder.encode(user.getPassword()));
 
         return userEntityRepository.save(newUser);

@@ -6,6 +6,8 @@ import hu.bmrk.bmoneytrackerbackend.service.interfaces.UserEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserEntityServiceImpl implements UserEntityService {
 
@@ -15,5 +17,10 @@ public class UserEntityServiceImpl implements UserEntityService {
     @Override
     public UserEntity findFirstById(Long id) {
         return userEntityRepository.findFirstById(id);
+    }
+
+    @Override
+    public List<UserEntity> findAll() {
+        return userEntityRepository.findAll();
     }
 }
