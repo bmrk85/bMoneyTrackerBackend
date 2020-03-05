@@ -35,11 +35,11 @@ public class Saving {
     private int amount;
 
     @JsonBackReference("category-savings")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
 
     @JsonBackReference("user-savings")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity userEntity;
 
 

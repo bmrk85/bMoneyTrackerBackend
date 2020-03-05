@@ -1,5 +1,6 @@
 package hu.bmrk.bmoneytrackerbackend.entity.DTO;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,10 +18,13 @@ public class UserEntityDTO {
 
     private String username;
 
+    @JsonManagedReference("user-spendings")
     private List<SpendingDTO> spendings;
 
+    @JsonManagedReference("user-savings")
     private List<SavingDTO> savings;
 
+    @JsonManagedReference("user-incomes")
     private List<IncomeDTO> incomes;
 
 }

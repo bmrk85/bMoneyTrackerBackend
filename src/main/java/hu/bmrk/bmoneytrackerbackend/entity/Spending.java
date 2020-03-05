@@ -25,7 +25,7 @@ public class Spending {
     private Long id;
 
     @JsonBackReference("category-spendings")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
 
     private int amount;
@@ -35,7 +35,7 @@ public class Spending {
     private Date date;
 
     @JsonBackReference("user-spendings")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity userEntity;
 
 

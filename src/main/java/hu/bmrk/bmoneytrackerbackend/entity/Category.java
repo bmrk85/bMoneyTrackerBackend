@@ -1,6 +1,6 @@
 package hu.bmrk.bmoneytrackerbackend.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,15 +23,15 @@ public class Category {
     @Id
     private String title;
 
-    @JsonManagedReference("category-incomes")
+    @JsonIgnore
     @OneToMany(mappedBy = "category")
     private List<Income> incomes;
 
-    @JsonManagedReference("category-savings")
+    @JsonIgnore
     @OneToMany(mappedBy = "category")
     private List<Saving> savings;
 
-    @JsonManagedReference("category-spendings")
+    @JsonIgnore
     @OneToMany(mappedBy = "category")
     private List<Spending> spendings;
 }

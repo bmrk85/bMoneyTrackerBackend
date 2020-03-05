@@ -3,6 +3,7 @@ package hu.bmrk.bmoneytrackerbackend.controller;
 import hu.bmrk.bmoneytrackerbackend.entity.DTO.SpendingDTO;
 import hu.bmrk.bmoneytrackerbackend.entity.Spending;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.SpendingService;
+import hu.bmrk.bmoneytrackerbackend.util.JwtTokenUtil;
 import hu.bmrk.bmoneytrackerbackend.util.OwnDateUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/spendings")
+@CrossOrigin(origins = "*")
 public class SpendingController {
 
     @Autowired
@@ -24,11 +26,15 @@ public class SpendingController {
     @Autowired
     ModelMapper modelMapper;
 
+    @Autowired
+    JwtTokenUtil jwtTokenUtil;
+
     @GetMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<List<SpendingDTO>> getSpendings(@RequestBody Long userId) {
+    public ResponseEntity<List<SpendingDTO>> getSpendingsForLoggedInUser(@RequestHeader("Authorization") String token) {
+        Long userId = jwtTokenUtil.getIdFromToken(token);
         List<SpendingDTO> spendingDTOS = new ArrayList<>();
         for (Spending s : spendingService.findAllByUserEntity_Id(userId)) {
             spendingDTOS.add(modelMapper.map(s, SpendingDTO.class));
@@ -41,7 +47,7 @@ public class SpendingController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<SpendingDTO> getSpendingById(@PathVariable Long id, @RequestBody Long userId) {
+    public ResponseEntity<SpendingDTO> getSpendingById(@PathVariable Long id, @RequestParam Long userId) {
         return new ResponseEntity<>(modelMapper.map(
                 spendingService.findFirstByIdAndUserEntity_Id(id, userId),SpendingDTO.class
         ), HttpStatus.OK);
@@ -53,7 +59,7 @@ public class SpendingController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<List<SpendingDTO>> getSpedingsBetween(
-            @RequestBody OwnDateUtil date,
+            @RequestParam OwnDateUtil date,
             @PathVariable Long userId
     ) {
         List<SpendingDTO> spendingDTOS = new ArrayList<>();
