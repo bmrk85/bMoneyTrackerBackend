@@ -18,7 +18,7 @@ public class SpendingDTO {
 
     private Long id;
 
-    private String category;
+    private CategoryDTO category;
 
     private int amount;
 

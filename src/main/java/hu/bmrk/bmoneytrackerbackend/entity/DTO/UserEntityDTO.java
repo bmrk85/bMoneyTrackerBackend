@@ -1,8 +1,5 @@
 package hu.bmrk.bmoneytrackerbackend.entity.DTO;
 
-import hu.bmrk.bmoneytrackerbackend.entity.Income;
-import hu.bmrk.bmoneytrackerbackend.entity.Saving;
-import hu.bmrk.bmoneytrackerbackend.entity.Spending;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,10 +17,10 @@ public class UserEntityDTO {
 
     private String username;
 
-    private List<Spending> spendings;
+    private List<SpendingDTO> spendings;
 
-    private List<Saving> savings;
+    private List<SavingDTO> savings;
 
-    private List<Income> incomes;
+    private List<IncomeDTO> incomes;
 
 }

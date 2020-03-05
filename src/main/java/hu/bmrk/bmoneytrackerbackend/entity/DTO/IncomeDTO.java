@@ -17,7 +17,7 @@ public class IncomeDTO {
 
     private Long id;
 
-    private String category;
+    private CategoryDTO category;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;

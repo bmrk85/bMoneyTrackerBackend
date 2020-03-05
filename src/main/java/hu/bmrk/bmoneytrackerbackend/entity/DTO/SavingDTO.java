@@ -1,6 +1,7 @@
 package hu.bmrk.bmoneytrackerbackend.entity.DTO;
 
 
+import hu.bmrk.bmoneytrackerbackend.entity.Category;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,7 +29,7 @@ public class SavingDTO {
 
     private int amount;
 
-    private String category;
+    private CategoryDTO category;
 
     private UserEntityDTO userEntity;
 
