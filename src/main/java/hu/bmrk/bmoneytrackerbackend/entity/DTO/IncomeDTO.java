@@ -18,6 +18,8 @@ public class IncomeDTO {
 
     private Long id;
 
+    private String name;
+
     @JsonBackReference("category-incomes")
     private CategoryDTO category;
 

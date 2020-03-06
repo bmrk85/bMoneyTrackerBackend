@@ -19,6 +19,8 @@ public class SpendingDTO {
 
     private Long id;
 
+    private String name;
+
     @JsonBackReference("category-spendings")
     private CategoryDTO category;
 

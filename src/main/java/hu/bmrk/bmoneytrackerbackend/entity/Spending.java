@@ -24,6 +24,8 @@ public class Spending {
     @GeneratedValue
     private Long id;
 
+    private String name;
+
     @JsonBackReference("category-spendings")
     @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
