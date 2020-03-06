@@ -1,7 +1,7 @@
 package hu.bmrk.bmoneytrackerbackend.entity.DTO;
 
 
-import hu.bmrk.bmoneytrackerbackend.entity.Category;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,8 +29,10 @@ public class SavingDTO {
 
     private int amount;
 
+    @JsonBackReference("category-savings")
     private CategoryDTO category;
 
+    @JsonBackReference("user-savings")
     private UserEntityDTO userEntity;
 
 }

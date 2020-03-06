@@ -22,6 +22,8 @@ public class Income {
     @GeneratedValue
     private Long id;
 
+    private String name;
+
     @JsonBackReference("category-incomes")
     @ManyToOne
     private Category category;

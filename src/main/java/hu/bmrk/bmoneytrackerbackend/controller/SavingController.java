@@ -15,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/savings")
+@CrossOrigin(origins = "*")
 public class SavingController {
 
     @Autowired

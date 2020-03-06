@@ -6,7 +6,7 @@ import hu.bmrk.bmoneytrackerbackend.service.interfaces.SpendingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -26,7 +26,7 @@ public class SpendingServiceImpl implements SpendingService {
     }
 
     @Override
-    public List<Spending> findAllByDateBetweenAndUserEntity_Id(Date timeFrom, Date timeTo, Long userId) {
+    public List<Spending> findAllByDateBetweenAndUserEntity_Id(Timestamp timeFrom, Timestamp timeTo, Long userId) {
         return spendingRepository.findAllByDateBetweenAndUserEntity_Id(timeFrom, timeTo, userId);
     }
 

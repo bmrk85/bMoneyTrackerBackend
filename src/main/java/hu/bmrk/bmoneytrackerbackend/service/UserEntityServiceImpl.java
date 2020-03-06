@@ -23,4 +23,9 @@ public class UserEntityServiceImpl implements UserEntityService {
     public List<UserEntity> findAll() {
         return userEntityRepository.findAll();
     }
+
+    @Override
+    public UserEntity findByUsername(String username) {
+        return userEntityRepository.findByUsername(username);
+    }
 }

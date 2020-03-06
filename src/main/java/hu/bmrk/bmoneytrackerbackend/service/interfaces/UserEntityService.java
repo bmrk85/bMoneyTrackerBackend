@@ -10,6 +10,8 @@ public interface UserEntityService {
 
     List<UserEntity> findAll();
 
+    UserEntity findByUsername(String username);
+
 
 
 }
