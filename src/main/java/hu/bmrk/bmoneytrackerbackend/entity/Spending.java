@@ -3,6 +3,7 @@ package hu.bmrk.bmoneytrackerbackend.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,8 +27,8 @@ public class Spending {
 
     private String name;
 
-    @JsonBackReference("category-spendings")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"incomes", "savings", "spendings"})
+    @ManyToOne
     private Category category;
 
     private int amount;
@@ -37,7 +38,7 @@ public class Spending {
     private Date date;
 
     @JsonBackReference("user-spendings")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private UserEntity userEntity;
 
 

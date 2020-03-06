@@ -4,7 +4,7 @@ import hu.bmrk.bmoneytrackerbackend.entity.Spending;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Repository
@@ -14,7 +14,7 @@ public interface SpendingRepository extends JpaRepository<Spending, Long> {
 
     List<Spending> findAllByUserEntity_Id(Long userId);
 
-    List<Spending> findAllByDateBetweenAndUserEntity_Id(Date timeFrom, Date timeTo, Long userId);
+    List<Spending> findAllByDateBetweenAndUserEntity_Id(Timestamp timeFrom, Timestamp timeTo, Long userId);
 
     List<Spending> findAllByCategory_Title(String title);
 

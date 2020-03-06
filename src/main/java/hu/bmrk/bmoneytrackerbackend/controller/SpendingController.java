@@ -4,15 +4,17 @@ import hu.bmrk.bmoneytrackerbackend.entity.DTO.SpendingDTO;
 import hu.bmrk.bmoneytrackerbackend.entity.Spending;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.SpendingService;
 import hu.bmrk.bmoneytrackerbackend.util.JwtTokenUtil;
-import hu.bmrk.bmoneytrackerbackend.util.OwnDateUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -54,16 +56,19 @@ public class SpendingController {
     }
 
     @GetMapping(
-            path = "/{userId}/date",
+            path = "/date",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<List<SpendingDTO>> getSpedingsBetween(
-            @RequestParam OwnDateUtil date,
-            @PathVariable Long userId
+            @RequestParam("dateFrom") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date dateFrom,
+            @RequestParam("dateTo") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date dateTo,
+            @RequestHeader("Authorization") String token
     ) {
+        Long userId = jwtTokenUtil.getIdFromToken(token);
+
         List<SpendingDTO> spendingDTOS = new ArrayList<>();
-        for(Spending s : spendingService.findAllByDateBetweenAndUserEntity_Id(date.getDateFrom(), date.getDateTo(), userId)){
+        for(Spending s : spendingService.findAllByDateBetweenAndUserEntity_Id(new Timestamp(dateFrom.getTime()), new Timestamp(dateTo.getTime()), userId)){
             spendingDTOS.add(modelMapper.map(s, SpendingDTO.class));
         }
         return new ResponseEntity<>(spendingDTOS, HttpStatus.OK);

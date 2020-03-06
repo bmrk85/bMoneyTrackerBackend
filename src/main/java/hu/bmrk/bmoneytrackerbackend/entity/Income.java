@@ -25,7 +25,7 @@ public class Income {
     private String name;
 
     @JsonBackReference("category-incomes")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Category category;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -35,7 +35,7 @@ public class Income {
     private int amount;
 
     @JsonBackReference("user-incomes")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private UserEntity userEntity;
 
 
