@@ -41,7 +41,7 @@ public class CategoryController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<CategoryDTO> createSaving(@RequestBody CategoryDTO category) {
+    public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO category) {
         categoryService.saveCategory(modelMapper.map(category, Category.class));
         return new ResponseEntity<>(category, HttpStatus.OK);
     }
