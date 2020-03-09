@@ -95,6 +95,22 @@ public class SpendingController {
         return new ResponseEntity<>(spending, HttpStatus.OK);
     }
 
+    @PutMapping(
+            path = "/edit",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<SpendingDTO> updateSpending(@RequestHeader("Authorization") String token, @RequestBody SpendingDTO spending) {
+        Long userId = jwtTokenUtil.getIdFromToken(token);
+        Spending tmp = spendingService.findFirstByIdAndUserEntity_Id(spending.getId(),userId);
+        if(tmp != null){
+            spending.setId(tmp.getId());
+        }
+        spendingService.saveSpending(modelMapper.map(spending, Spending.class));
+        return new ResponseEntity<>(spending, HttpStatus.OK);
+    }
+
+
     @PostMapping(path = "/delete/{id}")
     public void deleteSpending(@PathVariable Long id) {
         spendingService.deleteSpendingById(id);
