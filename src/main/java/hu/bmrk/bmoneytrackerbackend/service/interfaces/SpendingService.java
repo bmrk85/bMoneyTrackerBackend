@@ -11,7 +11,7 @@ public interface SpendingService {
 
     List<Spending> findAllByUserEntity_Id(Long userId);
 
-    List<Spending> findAllByDateBetweenAndUserEntity_Id(Timestamp timeFrom, Timestamp timeTo, Long userId);
+    List<Spending> findAllByDateIsGreaterThanEqualOrDateIsLessThanEqualAndUserEntity_Id(Timestamp timeFrom, Timestamp timeTo, Long userId);
 
     List<Spending> findAllByCategory_Title(String title);
 

@@ -11,4 +11,6 @@ public interface CategoryService {
     void deleteCategory(String title);
 
     Category saveCategory(Category category);
+
+    Category findCategoryByTitle(String title);
 }

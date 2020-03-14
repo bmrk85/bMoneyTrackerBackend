@@ -26,8 +26,8 @@ public class SpendingServiceImpl implements SpendingService {
     }
 
     @Override
-    public List<Spending> findAllByDateBetweenAndUserEntity_Id(Timestamp timeFrom, Timestamp timeTo, Long userId) {
-        return spendingRepository.findAllByDateBetweenAndUserEntity_Id(timeFrom, timeTo, userId);
+    public List<Spending> findAllByDateIsGreaterThanEqualOrDateIsLessThanEqualAndUserEntity_Id(Timestamp timeFrom, Timestamp timeTo, Long userId) {
+        return spendingRepository.findAllByDateIsGreaterThanEqualOrDateIsLessThanEqualAndUserEntity_Id(timeFrom, timeTo, userId);
     }
 
     @Override

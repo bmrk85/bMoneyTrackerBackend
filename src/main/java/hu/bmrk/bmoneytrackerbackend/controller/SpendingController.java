@@ -1,8 +1,11 @@
 package hu.bmrk.bmoneytrackerbackend.controller;
 
 import hu.bmrk.bmoneytrackerbackend.entity.DTO.SpendingDTO;
+import hu.bmrk.bmoneytrackerbackend.entity.DTO.UserEntityDTO;
 import hu.bmrk.bmoneytrackerbackend.entity.Spending;
+import hu.bmrk.bmoneytrackerbackend.service.interfaces.CategoryService;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.SpendingService;
+import hu.bmrk.bmoneytrackerbackend.service.interfaces.UserEntityService;
 import hu.bmrk.bmoneytrackerbackend.util.JwtTokenUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,12 @@ public class SpendingController {
 
     @Autowired
     SpendingService spendingService;
+
+    @Autowired
+    UserEntityService userEntityService;
+
+    @Autowired
+    CategoryService categoryService;
 
     @Autowired
     ModelMapper modelMapper;
@@ -68,7 +77,7 @@ public class SpendingController {
         Long userId = jwtTokenUtil.getIdFromToken(token);
 
         List<SpendingDTO> spendingDTOS = new ArrayList<>();
-        for(Spending s : spendingService.findAllByDateBetweenAndUserEntity_Id(new Timestamp(dateFrom.getTime()), new Timestamp(dateTo.getTime()), userId)){
+        for(Spending s : spendingService.findAllByDateIsGreaterThanEqualOrDateIsLessThanEqualAndUserEntity_Id(new Timestamp(dateFrom.getTime()), new Timestamp(dateTo.getTime()), userId)){
             spendingDTOS.add(modelMapper.map(s, SpendingDTO.class));
         }
         return new ResponseEntity<>(spendingDTOS, HttpStatus.OK);
@@ -79,10 +88,28 @@ public class SpendingController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<SpendingDTO> createSpending(@RequestBody SpendingDTO spending) {
+    public ResponseEntity<SpendingDTO> createSpending(@RequestHeader("Authorization") String token, @RequestBody SpendingDTO spending) {
+        Long userId = jwtTokenUtil.getIdFromToken(token);
+        spending.setUserEntity(modelMapper.map(userEntityService.findFirstById(userId), UserEntityDTO.class));
         spendingService.saveSpending(modelMapper.map(spending, Spending.class));
         return new ResponseEntity<>(spending, HttpStatus.OK);
     }
+
+    @PutMapping(
+            path = "/edit",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<SpendingDTO> updateSpending(@RequestHeader("Authorization") String token, @RequestBody SpendingDTO spending) {
+        Long userId = jwtTokenUtil.getIdFromToken(token);
+        Spending tmp = spendingService.findFirstByIdAndUserEntity_Id(spending.getId(),userId);
+        if(tmp != null){
+            spending.setId(tmp.getId());
+        }
+        spendingService.saveSpending(modelMapper.map(spending, Spending.class));
+        return new ResponseEntity<>(spending, HttpStatus.OK);
+    }
+
 
     @PostMapping(path = "/delete/{id}")
     public void deleteSpending(@PathVariable Long id) {
