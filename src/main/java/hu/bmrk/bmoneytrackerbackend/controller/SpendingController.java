@@ -77,7 +77,7 @@ public class SpendingController {
         Long userId = jwtTokenUtil.getIdFromToken(token);
 
         List<SpendingDTO> spendingDTOS = new ArrayList<>();
-        for(Spending s : spendingService.findAllByDateBetweenAndUserEntity_Id(new Timestamp(dateFrom.getTime()), new Timestamp(dateTo.getTime()), userId)){
+        for(Spending s : spendingService.findAllByDateIsGreaterThanEqualOrDateIsLessThanEqualAndUserEntity_Id(new Timestamp(dateFrom.getTime()), new Timestamp(dateTo.getTime()), userId)){
             spendingDTOS.add(modelMapper.map(s, SpendingDTO.class));
         }
         return new ResponseEntity<>(spendingDTOS, HttpStatus.OK);

@@ -11,7 +11,9 @@ public interface IncomeService {
 
     List<Income> findAllByUserEntity_Id(Long userId);
 
-    List<Income> findAllByDateBetweenAndUserEntity_Id(Timestamp timeFrom, Timestamp timeTo, Long userId);
+    List<Income> findAllByDateIsGreaterThanEqualOrDateIsLessThanEqualAndUserEntity_Id(Timestamp timeFrom, Timestamp timeTo, Long userId);
+
+
 
     List<Income> findAllByCategory_Title(String title);
 

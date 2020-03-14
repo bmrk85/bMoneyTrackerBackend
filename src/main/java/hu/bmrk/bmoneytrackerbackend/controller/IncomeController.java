@@ -78,7 +78,7 @@ public class IncomeController {
         Long userId = jwtTokenUtil.getIdFromToken(token);
 
         List<IncomeDTO> incomeDTOS = new ArrayList<>();
-        for(Income i : incomeService.findAllByDateBetweenAndUserEntity_Id(new Timestamp(dateFrom.getTime()), new Timestamp(dateTo.getTime()), userId)){
+        for(Income i : incomeService.findAllByDateIsGreaterThanEqualOrDateIsLessThanEqualAndUserEntity_Id(new Timestamp(dateFrom.getTime()), new Timestamp(dateTo.getTime()), userId)){
             incomeDTOS.add(modelMapper.map(i, IncomeDTO.class));
         }
         return new ResponseEntity<>(incomeDTOS, HttpStatus.OK);

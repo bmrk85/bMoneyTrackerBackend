@@ -26,8 +26,8 @@ public class IncomeServiceImpl implements IncomeService {
     }
 
     @Override
-    public List<Income> findAllByDateBetweenAndUserEntity_Id(Timestamp timeFrom, Timestamp timeTo, Long userId) {
-        return incomeRepository.findAllByDateBetweenAndUserEntity_Id(timeFrom, timeTo, userId);
+    public List<Income> findAllByDateIsGreaterThanEqualOrDateIsLessThanEqualAndUserEntity_Id(Timestamp timeFrom, Timestamp timeTo, Long userId) {
+        return incomeRepository.findAllByDateIsGreaterThanEqualOrDateIsLessThanEqualAndUserEntity_Id(timeFrom, timeTo, userId);
     }
 
     @Override
