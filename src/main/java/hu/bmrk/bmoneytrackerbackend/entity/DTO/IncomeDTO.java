@@ -1,6 +1,8 @@
 package hu.bmrk.bmoneytrackerbackend.entity.DTO;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,10 +22,11 @@ public class IncomeDTO {
 
     private String name;
 
-    @JsonBackReference("category-incomes")
+    @JsonIgnoreProperties({"incomes", "savings", "spendings"})
     private CategoryDTO category;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private Date date;
 
     private int amount;
