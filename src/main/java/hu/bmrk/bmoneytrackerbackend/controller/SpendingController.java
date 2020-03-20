@@ -6,13 +6,13 @@ import hu.bmrk.bmoneytrackerbackend.entity.Spending;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.CategoryService;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.SpendingService;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.UserEntityService;
-import hu.bmrk.bmoneytrackerbackend.util.JwtTokenUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
@@ -37,15 +37,13 @@ public class SpendingController {
     @Autowired
     ModelMapper modelMapper;
 
-    @Autowired
-    JwtTokenUtil jwtTokenUtil;
 
     @GetMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<List<SpendingDTO>> getSpendingsForLoggedInUser(@RequestHeader("Authorization") String token) {
-        Long userId = jwtTokenUtil.getIdFromToken(token);
+    public ResponseEntity<List<SpendingDTO>> getSpendingsForLoggedInUser(Authentication authentication) {
+        Long userId = userEntityService.findByUsername(authentication.getName()).getId();
         List<SpendingDTO> spendingDTOS = new ArrayList<>();
         for (Spending s : spendingService.findAllByUserEntity_Id(userId)) {
             spendingDTOS.add(modelMapper.map(s, SpendingDTO.class));
@@ -72,9 +70,9 @@ public class SpendingController {
     public ResponseEntity<List<SpendingDTO>> getSpedingsBetween(
             @RequestParam("dateFrom") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date dateFrom,
             @RequestParam("dateTo") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date dateTo,
-            @RequestHeader("Authorization") String token
+            Authentication authentication
     ) {
-        Long userId = jwtTokenUtil.getIdFromToken(token);
+        Long userId = userEntityService.findByUsername(authentication.getName()).getId();
 
         List<SpendingDTO> spendingDTOS = new ArrayList<>();
         for(Spending s : spendingService.findAllByDateIsGreaterThanEqualOrDateIsLessThanEqualAndUserEntity_Id(new Timestamp(dateFrom.getTime()), new Timestamp(dateTo.getTime()), userId)){
@@ -88,28 +86,12 @@ public class SpendingController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<SpendingDTO> createSpending(@RequestHeader("Authorization") String token, @RequestBody SpendingDTO spending) {
-        Long userId = jwtTokenUtil.getIdFromToken(token);
+    public ResponseEntity<SpendingDTO> createSpending(Authentication authentication, @RequestBody SpendingDTO spending) {
+        Long userId = userEntityService.findByUsername(authentication.getName()).getId();
         spending.setUserEntity(modelMapper.map(userEntityService.findFirstById(userId), UserEntityDTO.class));
         spendingService.saveSpending(modelMapper.map(spending, Spending.class));
         return new ResponseEntity<>(spending, HttpStatus.OK);
     }
-
-    @PutMapping(
-            path = "/edit",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<SpendingDTO> updateSpending(@RequestHeader("Authorization") String token, @RequestBody SpendingDTO spending) {
-        Long userId = jwtTokenUtil.getIdFromToken(token);
-        Spending tmp = spendingService.findFirstByIdAndUserEntity_Id(spending.getId(),userId);
-        if(tmp != null){
-            spending.setId(tmp.getId());
-        }
-        spendingService.saveSpending(modelMapper.map(spending, Spending.class));
-        return new ResponseEntity<>(spending, HttpStatus.OK);
-    }
-
 
     @PostMapping(path = "/delete/{id}")
     public void deleteSpending(@PathVariable Long id) {

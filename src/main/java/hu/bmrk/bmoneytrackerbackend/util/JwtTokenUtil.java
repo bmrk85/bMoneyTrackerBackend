@@ -31,10 +31,10 @@ public class JwtTokenUtil implements Serializable {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
-    public Long getIdFromToken(String token){
+   /* public Long getIdFromToken(String token){
         token = token.substring(7);
         return Long.valueOf((Integer) getAllClaimsFromToken(token).get("id"));
-    }
+    }*/
 
     private Date getExpirationDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getExpiration);
@@ -56,7 +56,7 @@ public class JwtTokenUtil implements Serializable {
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("id",userEntityService.findByUsername(userDetails.getUsername()).getId());
+       // claims.put("id",userEntityService.findByUsername(userDetails.getUsername()).getId());
         return doGenerateToken(claims, userDetails.getUsername());
     }
 
