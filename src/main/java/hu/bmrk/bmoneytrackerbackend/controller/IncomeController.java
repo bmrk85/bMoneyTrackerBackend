@@ -81,7 +81,6 @@ public class IncomeController {
     }
 
     @PostMapping(
-            path = "/new",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
