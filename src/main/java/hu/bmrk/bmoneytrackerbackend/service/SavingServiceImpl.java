@@ -22,7 +22,7 @@ public class SavingServiceImpl implements SavingService {
 
     @Override
     public List<Saving> findAllByUserEntity_Id(Long userId) {
-        return savingRepository.findAllByUserEntity_Id(userId);
+        return savingRepository.findAllByUserEntity_IdOrderByDateFromAsc(userId);
     }
 
     @Override

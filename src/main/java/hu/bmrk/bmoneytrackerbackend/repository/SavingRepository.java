@@ -11,7 +11,7 @@ public interface SavingRepository extends JpaRepository<Saving,Long> {
 
     Saving findFirstByIdAndUserEntity_Id(Long id, Long userId);
 
-    List<Saving> findAllByUserEntity_Id(Long userId);
+    List<Saving> findAllByUserEntity_IdOrderByDateFromAsc(Long userId);
 
     List<Saving> findAllByCategory_Title(String title);
 
