@@ -3,9 +3,11 @@ package hu.bmrk.bmoneytrackerbackend.controller;
 import hu.bmrk.bmoneytrackerbackend.entity.DTO.SpendingDTO;
 import hu.bmrk.bmoneytrackerbackend.entity.DTO.UserEntityDTO;
 import hu.bmrk.bmoneytrackerbackend.entity.Spending;
+import hu.bmrk.bmoneytrackerbackend.entity.UserEntity;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.CategoryService;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.SpendingService;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.UserEntityService;
+import hu.bmrk.bmoneytrackerbackend.util.HelperUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -36,15 +38,18 @@ public class SpendingController {
     @Autowired
     ModelMapper modelMapper;
 
+    @Autowired
+    HelperUtil helper;
+
 
     @GetMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<List<SpendingDTO>> getSpendingsForLoggedInUser(Authentication authentication) {
-        Long userId = userEntityService.findByUsername(authentication.getName()).getId();
+        UserEntity user = helper.getUser(authentication);
         List<SpendingDTO> spendingDTOS = new ArrayList<>();
-        for (Spending s : spendingService.findAllByUserEntity_Id(userId)) {
+        for (Spending s : spendingService.findAllByUserEntity_Id(user.getId())) {
             spendingDTOS.add(modelMapper.map(s, SpendingDTO.class));
         }
         return new ResponseEntity<>(spendingDTOS, HttpStatus.OK);
@@ -71,10 +76,10 @@ public class SpendingController {
             @RequestParam("dateTo") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date dateTo,
             Authentication authentication
     ) {
-        Long userId = userEntityService.findByUsername(authentication.getName()).getId();
+        UserEntity user = helper.getUser(authentication);
 
         List<SpendingDTO> spendingDTOS = new ArrayList<>();
-        for(Spending s : spendingService.findAllByDateBetweenAndUserEntity_Id(dateFrom, dateTo, userId)){
+        for(Spending s : spendingService.findAllByDateBetweenAndUserEntity_Id(dateFrom, dateTo, user.getId())){
             spendingDTOS.add(modelMapper.map(s, SpendingDTO.class));
         }
         return new ResponseEntity<>(spendingDTOS, HttpStatus.OK);
@@ -85,8 +90,9 @@ public class SpendingController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<SpendingDTO> createSpending(Authentication authentication, @RequestBody SpendingDTO spending) {
-        Long userId = userEntityService.findByUsername(authentication.getName()).getId();
-        spending.setUserEntity(modelMapper.map(userEntityService.findFirstById(userId), UserEntityDTO.class));
+        UserEntity user = helper.getUser(authentication);
+        spending.setUserEntity(modelMapper.map(user, UserEntityDTO.class));
+        helper.checkCategoryForUser(spending.getCategory(),spending.getUserEntity());
         spendingService.saveSpending(modelMapper.map(spending, Spending.class));
         return new ResponseEntity<>(spending, HttpStatus.OK);
     }

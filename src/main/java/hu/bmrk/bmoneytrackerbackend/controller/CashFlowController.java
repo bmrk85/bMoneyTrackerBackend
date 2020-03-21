@@ -3,10 +3,12 @@ package hu.bmrk.bmoneytrackerbackend.controller;
 import hu.bmrk.bmoneytrackerbackend.entity.DTO.CashFlowDTO;
 import hu.bmrk.bmoneytrackerbackend.entity.Income;
 import hu.bmrk.bmoneytrackerbackend.entity.Spending;
+import hu.bmrk.bmoneytrackerbackend.entity.UserEntity;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.CategoryService;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.IncomeService;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.SpendingService;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.UserEntityService;
+import hu.bmrk.bmoneytrackerbackend.util.HelperUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -40,6 +42,9 @@ public class CashFlowController {
     @Autowired
     SpendingService spendingService;
 
+    @Autowired
+    HelperUtil helper;
+
     @GetMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -49,12 +54,12 @@ public class CashFlowController {
             @RequestParam("dateTo") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date dateTo,
             Authentication authentication
     ) {
-        Long userId = userEntityService.findByUsername(authentication.getName()).getId();
+        UserEntity user = helper.getUser(authentication);
         List<CashFlowDTO> cashFlowDTOS = new ArrayList<>();
-        for (Income i : incomeService.findAllByDateBetweenAndUserEntity_Id(dateFrom,dateTo, userId)) {
+        for (Income i : incomeService.findAllByDateBetweenAndUserEntity_Id(dateFrom,dateTo, user.getId())) {
             cashFlowDTOS.add(modelMapper.map(i,CashFlowDTO.class));
         }
-        for(Spending s: spendingService.findAllByDateBetweenAndUserEntity_Id(dateFrom,dateTo, userId)){
+        for(Spending s: spendingService.findAllByDateBetweenAndUserEntity_Id(dateFrom,dateTo, user.getId())){
             cashFlowDTOS.add(modelMapper.map(s,CashFlowDTO.class));
         }
         return new ResponseEntity<>(cashFlowDTOS, HttpStatus.OK);

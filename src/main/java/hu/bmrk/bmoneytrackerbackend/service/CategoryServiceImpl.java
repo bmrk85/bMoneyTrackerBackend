@@ -17,8 +17,8 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     @Override
-    public List<Category> findAll() {
-        return categoryRepository.findAll();
+    public List<Category> findAllByUserEntity_Id(Long id) {
+        return categoryRepository.findAllByUserEntity_Id(id);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category findCategoryByTitle(String title) {
-        return categoryRepository.findCategoryByTitle(title);
+    public Category findCategoryByTitleAndUserEntity_Id(String title, Long id) {
+        return categoryRepository.findCategoryByTitleAndUserEntity_Id(title, id);
     }
 }

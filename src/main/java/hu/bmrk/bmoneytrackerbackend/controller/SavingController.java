@@ -3,8 +3,11 @@ package hu.bmrk.bmoneytrackerbackend.controller;
 import hu.bmrk.bmoneytrackerbackend.entity.DTO.SavingDTO;
 import hu.bmrk.bmoneytrackerbackend.entity.DTO.UserEntityDTO;
 import hu.bmrk.bmoneytrackerbackend.entity.Saving;
+import hu.bmrk.bmoneytrackerbackend.entity.UserEntity;
+import hu.bmrk.bmoneytrackerbackend.service.interfaces.CategoryService;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.SavingService;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.UserEntityService;
+import hu.bmrk.bmoneytrackerbackend.util.HelperUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,14 +33,20 @@ public class SavingController {
     @Autowired
     UserEntityService userEntityService;
 
+    @Autowired
+    CategoryService categoryService;
+
+    @Autowired
+    HelperUtil helper;
+
     @GetMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<List<SavingDTO>> getSavings(Authentication authentication) {
         List<SavingDTO> savingDTOS = new ArrayList<>();
-        Long userId = userEntityService.findByUsername(authentication.getName()).getId();
-        for (Saving s : savingService.findAllByUserEntity_Id(userId)) {
+        UserEntity user = helper.getUser(authentication);
+        for (Saving s : savingService.findAllByUserEntity_Id(user.getId())) {
             savingDTOS.add(modelMapper.map(s, SavingDTO.class));
         }
         return new ResponseEntity<>(savingDTOS, HttpStatus.OK);
@@ -50,7 +59,7 @@ public class SavingController {
     )
     public ResponseEntity<SavingDTO> getSavingById(@PathVariable Long id, Authentication authentication) {
         return new ResponseEntity<>(modelMapper.map(
-                savingService.findFirstByIdAndUserEntity_Id(id, userEntityService.findByUsername(authentication.getName()).getId()), SavingDTO.class
+                savingService.findFirstByIdAndUserEntity_Id(id, helper.getUser(authentication).getId()), SavingDTO.class
         ), HttpStatus.OK);
     }
 
@@ -59,7 +68,9 @@ public class SavingController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<SavingDTO> createSaving(@RequestBody SavingDTO saving, Authentication authentication) {
-        saving.setUserEntity(modelMapper.map(userEntityService.findByUsername(authentication.getName()), UserEntityDTO.class));
+        UserEntity user = helper.getUser(authentication);
+        saving.setUserEntity(modelMapper.map(user, UserEntityDTO.class));
+        helper.checkCategoryForUser(saving.getCategory(), saving.getUserEntity());
         savingService.saveSaving(modelMapper.map(saving, Saving.class));
         return new ResponseEntity<>(saving, HttpStatus.OK);
     }
