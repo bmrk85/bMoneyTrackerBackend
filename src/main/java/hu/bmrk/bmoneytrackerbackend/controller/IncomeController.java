@@ -4,19 +4,20 @@ package hu.bmrk.bmoneytrackerbackend.controller;
 import hu.bmrk.bmoneytrackerbackend.entity.DTO.IncomeDTO;
 import hu.bmrk.bmoneytrackerbackend.entity.DTO.UserEntityDTO;
 import hu.bmrk.bmoneytrackerbackend.entity.Income;
+import hu.bmrk.bmoneytrackerbackend.entity.UserEntity;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.CategoryService;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.IncomeService;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.UserEntityService;
-import hu.bmrk.bmoneytrackerbackend.util.JwtTokenUtil;
+import hu.bmrk.bmoneytrackerbackend.util.HelperUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,16 +40,16 @@ public class IncomeController {
     ModelMapper modelMapper;
 
     @Autowired
-    JwtTokenUtil jwtTokenUtil;
+    HelperUtil helper;
 
     @GetMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<List<IncomeDTO>> getIncomesForLoggedInUser(@RequestHeader("Authorization") String token) {
-        Long userId = jwtTokenUtil.getIdFromToken(token);
+    public ResponseEntity<List<IncomeDTO>> getIncomesForLoggedInUser(Authentication authentication) {
+        UserEntity user = helper.getUser(authentication);
         List<IncomeDTO> incomeDTOS = new ArrayList<>();
-        for (Income i : incomeService.findAllByUserEntity_Id(userId)) {
+        for (Income i : incomeService.findAllByUserEntity_Id(user.getId())) {
             incomeDTOS.add(modelMapper.map(i, IncomeDTO.class));
         }
         return new ResponseEntity<>(incomeDTOS, HttpStatus.OK);
@@ -73,44 +74,28 @@ public class IncomeController {
     public ResponseEntity<List<IncomeDTO>> getIncomesBetween(
             @RequestParam("dateFrom") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date dateFrom,
             @RequestParam("dateTo") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date dateTo,
-            @RequestHeader("Authorization") String token
+            Authentication authentication
     ) {
-        Long userId = jwtTokenUtil.getIdFromToken(token);
+        UserEntity user = helper.getUser(authentication);
 
         List<IncomeDTO> incomeDTOS = new ArrayList<>();
-        for(Income i : incomeService.findAllByDateIsGreaterThanEqualOrDateIsLessThanEqualAndUserEntity_Id(new Timestamp(dateFrom.getTime()), new Timestamp(dateTo.getTime()), userId)){
+        for(Income i : incomeService.findAllByDateBetweenAndUserEntity_Id(dateFrom, dateTo, user.getId())){
             incomeDTOS.add(modelMapper.map(i, IncomeDTO.class));
         }
         return new ResponseEntity<>(incomeDTOS, HttpStatus.OK);
     }
 
     @PostMapping(
-            path = "/new",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<IncomeDTO> createIncome(@RequestHeader("Authorization") String token, @RequestBody IncomeDTO income) {
-        Long userId = jwtTokenUtil.getIdFromToken(token);
-        income.setUserEntity(modelMapper.map(userEntityService.findFirstById(userId), UserEntityDTO.class));
+    public ResponseEntity<IncomeDTO> createIncome(Authentication authentication, @RequestBody IncomeDTO income) {
+        UserEntity user = helper.getUser(authentication);
+        income.setUserEntity(modelMapper.map(user, UserEntityDTO.class));
+        helper.checkCategoryForUser(income.getCategory(),income.getUserEntity());
         incomeService.saveIncome(modelMapper.map(income, Income.class));
         return new ResponseEntity<>(income, HttpStatus.OK);
     }
-
-    @PutMapping(
-            path = "/edit",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<IncomeDTO> updateIncome(@RequestHeader("Authorization") String token, @RequestBody IncomeDTO income) {
-        Long userId = jwtTokenUtil.getIdFromToken(token);
-        Income tmp = incomeService.findFirstByIdAndUserEntity_Id(income.getId(),userId);
-        if(tmp != null){
-            income.setId(tmp.getId());
-        }
-        incomeService.saveIncome(modelMapper.map(income, Income.class));
-        return new ResponseEntity<>(income, HttpStatus.OK);
-    }
-
 
     @PostMapping(path = "/delete/{id}")
     public void deleteIncome(@PathVariable Long id) {

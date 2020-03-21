@@ -1,5 +1,6 @@
 package hu.bmrk.bmoneytrackerbackend.entity.DTO;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,6 +16,9 @@ import java.util.List;
 public class CategoryDTO {
 
     private String title;
+
+    @JsonBackReference("user-categories")
+    private UserEntityDTO userEntity;
 
     @JsonIgnore
     private List<IncomeDTO> incomes;

@@ -44,6 +44,10 @@ public class UserEntity {
     @OneToMany(mappedBy = "userEntity")
     private List<Income> incomes;
 
+    @JsonManagedReference("user-categories")
+    @OneToMany(mappedBy = "userEntity")
+    private List<Category> categories;
+
 
 
 

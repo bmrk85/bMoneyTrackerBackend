@@ -27,4 +27,7 @@ public class UserEntityDTO {
     @JsonManagedReference("user-incomes")
     private List<IncomeDTO> incomes;
 
+    @JsonManagedReference("user-categories")
+    private List<CategoryDTO> categories;
+
 }

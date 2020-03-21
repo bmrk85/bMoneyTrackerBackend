@@ -6,11 +6,11 @@ import java.util.List;
 
 public interface CategoryService {
 
-    List<Category> findAll();
+    List<Category> findAllByUserEntity_Id(Long id);
 
     void deleteCategory(String title);
 
     Category saveCategory(Category category);
 
-    Category findCategoryByTitle(String title);
+    Category findCategoryByTitleAndUserEntity_Id(String title, Long id);
 }
