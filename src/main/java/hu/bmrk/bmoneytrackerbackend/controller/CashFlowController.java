@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -52,10 +51,10 @@ public class CashFlowController {
     ) {
         Long userId = userEntityService.findByUsername(authentication.getName()).getId();
         List<CashFlowDTO> cashFlowDTOS = new ArrayList<>();
-        for (Income i : incomeService.findAllByDateIsGreaterThanEqualOrDateIsLessThanEqualAndUserEntity_Id(new Timestamp(dateFrom.getTime()), new Timestamp(dateTo.getTime()), userId)) {
+        for (Income i : incomeService.findAllByDateBetweenAndUserEntity_Id(dateFrom,dateTo, userId)) {
             cashFlowDTOS.add(modelMapper.map(i,CashFlowDTO.class));
         }
-        for(Spending s: spendingService.findAllByDateIsGreaterThanEqualOrDateIsLessThanEqualAndUserEntity_Id(new Timestamp(dateFrom.getTime()), new Timestamp(dateTo.getTime()), userId)){
+        for(Spending s: spendingService.findAllByDateBetweenAndUserEntity_Id(dateFrom,dateTo, userId)){
             cashFlowDTOS.add(modelMapper.map(s,CashFlowDTO.class));
         }
         return new ResponseEntity<>(cashFlowDTOS, HttpStatus.OK);

@@ -2,7 +2,7 @@ package hu.bmrk.bmoneytrackerbackend.service.interfaces;
 
 import hu.bmrk.bmoneytrackerbackend.entity.Income;
 
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 public interface IncomeService {
@@ -11,9 +11,7 @@ public interface IncomeService {
 
     List<Income> findAllByUserEntity_Id(Long userId);
 
-    List<Income> findAllByDateIsGreaterThanEqualOrDateIsLessThanEqualAndUserEntity_Id(Timestamp timeFrom, Timestamp timeTo, Long userId);
-
-
+    List<Income> findAllByDateBetweenAndUserEntity_Id(Date timeFrom, Date timeTo, Long userId);
 
     List<Income> findAllByCategory_Title(String title);
 

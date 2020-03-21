@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -75,7 +74,7 @@ public class IncomeController {
         Long userId = userEntityService.findByUsername(authentication.getName()).getId();
 
         List<IncomeDTO> incomeDTOS = new ArrayList<>();
-        for(Income i : incomeService.findAllByDateIsGreaterThanEqualOrDateIsLessThanEqualAndUserEntity_Id(new Timestamp(dateFrom.getTime()), new Timestamp(dateTo.getTime()), userId)){
+        for(Income i : incomeService.findAllByDateBetweenAndUserEntity_Id(dateFrom, dateTo, userId)){
             incomeDTOS.add(modelMapper.map(i, IncomeDTO.class));
         }
         return new ResponseEntity<>(incomeDTOS, HttpStatus.OK);

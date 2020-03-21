@@ -14,7 +14,7 @@ public interface IncomeRepository extends JpaRepository<Income,Long> {
 
     List<Income> findAllByUserEntity_Id(Long userId);
 
-    List<Income> findAllByDateIsGreaterThanEqualOrDateIsLessThanEqualAndUserEntity_Id(Date timeFrom, Date timeTo, Long userId);
+    List<Income> findAllByDateBetweenAndUserEntity_Id(Date timeFrom, Date timeTo, Long userId);
 
     List<Income> findAllByCategory_Title(String title);
 

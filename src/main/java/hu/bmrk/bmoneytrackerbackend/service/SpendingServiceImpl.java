@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -26,8 +27,8 @@ public class SpendingServiceImpl implements SpendingService {
     }
 
     @Override
-    public List<Spending> findAllByDateIsGreaterThanEqualOrDateIsLessThanEqualAndUserEntity_Id(Timestamp timeFrom, Timestamp timeTo, Long userId) {
-        return spendingRepository.findAllByDateIsGreaterThanEqualOrDateIsLessThanEqualAndUserEntity_Id(timeFrom, timeTo, userId);
+    public List<Spending> findAllByDateBetweenAndUserEntity_Id(Date timeFrom, Date timeTo, Long userId) {
+        return spendingRepository.findAllByDateBetweenAndUserEntity_Id(timeFrom, timeTo, userId);
     }
 
     @Override

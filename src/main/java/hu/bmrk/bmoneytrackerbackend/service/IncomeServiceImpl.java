@@ -6,7 +6,7 @@ import hu.bmrk.bmoneytrackerbackend.service.interfaces.IncomeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -26,8 +26,8 @@ public class IncomeServiceImpl implements IncomeService {
     }
 
     @Override
-    public List<Income> findAllByDateIsGreaterThanEqualOrDateIsLessThanEqualAndUserEntity_Id(Timestamp timeFrom, Timestamp timeTo, Long userId) {
-        return incomeRepository.findAllByDateIsGreaterThanEqualOrDateIsLessThanEqualAndUserEntity_Id(timeFrom, timeTo, userId);
+    public List<Income> findAllByDateBetweenAndUserEntity_Id(Date timeFrom, Date timeTo, Long userId) {
+        return incomeRepository.findAllByDateBetweenAndUserEntity_Id(timeFrom, timeTo, userId);
     }
 
     @Override
