@@ -1,8 +1,5 @@
 package hu.bmrk.bmoneytrackerbackend.util;
 
-import hu.bmrk.bmoneytrackerbackend.entity.Category;
-import hu.bmrk.bmoneytrackerbackend.entity.DTO.CategoryDTO;
-import hu.bmrk.bmoneytrackerbackend.entity.DTO.UserEntityDTO;
 import hu.bmrk.bmoneytrackerbackend.entity.UserEntity;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.CategoryService;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.UserEntityService;
@@ -23,14 +20,8 @@ public class HelperUtil {
     @Autowired
     ModelMapper modelMapper;
 
-    public void checkCategoryForUser(CategoryDTO category, UserEntityDTO user) {
-        if (categoryService.findCategoryByTitleAndUserEntity_Id(category.getTitle(), user.getId()) == null) {
-            category.setUserEntity(user);
-            categoryService.saveCategory(modelMapper.map(category, Category.class));
-        }
-    }
 
-    public UserEntity getUser(Authentication authentication){
+    public UserEntity getUser(Authentication authentication) {
         return userEntityService.findByUsername(authentication.getName());
     }
 

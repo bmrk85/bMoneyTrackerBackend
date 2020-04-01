@@ -43,6 +43,7 @@ public class CategoryController {
         return new ResponseEntity<>(categoryDTOS, HttpStatus.OK);
     }
 
+
     @PostMapping(
             path = "/new",
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -51,6 +52,16 @@ public class CategoryController {
     public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO category) {
         categoryService.saveCategory(modelMapper.map(category, Category.class));
         return new ResponseEntity<>(category, HttpStatus.OK);
+    }
+
+    @PostMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<CategoryDTO> editCategory(@RequestBody CategoryDTO categoryDTO, Authentication authentication){
+        Category category = modelMapper.map(categoryDTO, Category.class);
+        category.setUserEntity(helper.getUser(authentication));
+        return new ResponseEntity<>(modelMapper.map(categoryService.saveCategory(category),CategoryDTO.class), HttpStatus.OK);
     }
 
 

@@ -8,9 +8,13 @@ public interface CategoryService {
 
     List<Category> findAllByUserEntity_Id(Long id);
 
-    void deleteCategory(String title);
+    void deleteCategory(Long id);
+
+    Category findById(Long id);
 
     Category saveCategory(Category category);
+
+    Category editCategory(Category category);
 
     Category findCategoryByTitleAndUserEntity_Id(String title, Long id);
 }

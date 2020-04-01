@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -25,6 +26,11 @@ public class UserController {
 
 
     @GetMapping
+    public ResponseEntity<UserEntityDTO> getCurrentUser(Authentication authentication){
+        return new ResponseEntity<>(modelMapper.map(userEntityService.findByUsername(authentication.getName()),UserEntityDTO.class), HttpStatus.OK);
+    }
+
+    @GetMapping("/all")
     public ResponseEntity<List<UserEntityDTO>> getUsers(){
         List<UserEntityDTO> userEntityDTOS = new ArrayList<>();
         for(UserEntity u: userEntityService.findAll()){

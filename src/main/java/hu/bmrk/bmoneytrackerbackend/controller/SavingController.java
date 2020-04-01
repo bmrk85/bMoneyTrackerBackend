@@ -1,7 +1,7 @@
 package hu.bmrk.bmoneytrackerbackend.controller;
 
+import hu.bmrk.bmoneytrackerbackend.entity.Category;
 import hu.bmrk.bmoneytrackerbackend.entity.DTO.SavingDTO;
-import hu.bmrk.bmoneytrackerbackend.entity.DTO.UserEntityDTO;
 import hu.bmrk.bmoneytrackerbackend.entity.Saving;
 import hu.bmrk.bmoneytrackerbackend.entity.UserEntity;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.CategoryService;
@@ -67,12 +67,16 @@ public class SavingController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<SavingDTO> createSaving(@RequestBody SavingDTO saving, Authentication authentication) {
+    public ResponseEntity<SavingDTO> createSaving(@RequestBody SavingDTO savingDTO, Authentication authentication) {
         UserEntity user = helper.getUser(authentication);
-        saving.setUserEntity(modelMapper.map(user, UserEntityDTO.class));
-        helper.checkCategoryForUser(saving.getCategory(), saving.getUserEntity());
+        Saving saving = modelMapper.map(savingDTO, Saving.class);
+        saving.setUserEntity(user);
+        if(saving.getCategory().getId() == null){
+            saving.getCategory().setUserEntity(user);
+            saving.setCategory(categoryService.saveCategory(modelMapper.map(saving.getCategory(), Category.class)));
+        }
         savingService.saveSaving(modelMapper.map(saving, Saving.class));
-        return new ResponseEntity<>(saving, HttpStatus.OK);
+        return new ResponseEntity<>(modelMapper.map(saving, SavingDTO.class), HttpStatus.OK);
     }
 
     @PostMapping(path = "/delete/{id}")

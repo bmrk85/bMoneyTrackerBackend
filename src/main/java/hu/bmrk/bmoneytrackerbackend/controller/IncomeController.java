@@ -1,8 +1,8 @@
 package hu.bmrk.bmoneytrackerbackend.controller;
 
 
+import hu.bmrk.bmoneytrackerbackend.entity.Category;
 import hu.bmrk.bmoneytrackerbackend.entity.DTO.IncomeDTO;
-import hu.bmrk.bmoneytrackerbackend.entity.DTO.UserEntityDTO;
 import hu.bmrk.bmoneytrackerbackend.entity.Income;
 import hu.bmrk.bmoneytrackerbackend.entity.UserEntity;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.CategoryService;
@@ -89,12 +89,16 @@ public class IncomeController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<IncomeDTO> createIncome(Authentication authentication, @RequestBody IncomeDTO income) {
+    public ResponseEntity<IncomeDTO> createIncome(Authentication authentication, @RequestBody IncomeDTO incomeDTO) {
         UserEntity user = helper.getUser(authentication);
-        income.setUserEntity(modelMapper.map(user, UserEntityDTO.class));
-        helper.checkCategoryForUser(income.getCategory(),income.getUserEntity());
+        Income income = modelMapper.map(incomeDTO, Income.class);
+        income.setUserEntity(user);
+        if(income.getCategory().getId() == null){
+            income.getCategory().setUserEntity(user);
+            income.setCategory(categoryService.saveCategory(modelMapper.map(income.getCategory(), Category.class)));
+        }
         incomeService.saveIncome(modelMapper.map(income, Income.class));
-        return new ResponseEntity<>(income, HttpStatus.OK);
+        return new ResponseEntity<>(modelMapper.map(income, IncomeDTO.class), HttpStatus.OK);
     }
 
     @PostMapping(path = "/delete/{id}")

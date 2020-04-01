@@ -7,6 +7,7 @@ import hu.bmrk.bmoneytrackerbackend.service.interfaces.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -22,12 +23,22 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void deleteCategory(String title) {
-        categoryRepository.deleteById(title);
+    public void deleteCategory(Long id) {
+        categoryRepository.deleteById(id);
+    }
+
+    @Override
+    public Category findById(Long id) {
+        return categoryRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
     public Category saveCategory(Category category) {
+        return categoryRepository.save(category);
+    }
+
+    @Override
+    public Category editCategory(Category category) {
         return categoryRepository.save(category);
     }
 

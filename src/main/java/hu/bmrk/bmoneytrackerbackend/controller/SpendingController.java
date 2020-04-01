@@ -1,7 +1,7 @@
 package hu.bmrk.bmoneytrackerbackend.controller;
 
+import hu.bmrk.bmoneytrackerbackend.entity.Category;
 import hu.bmrk.bmoneytrackerbackend.entity.DTO.SpendingDTO;
-import hu.bmrk.bmoneytrackerbackend.entity.DTO.UserEntityDTO;
 import hu.bmrk.bmoneytrackerbackend.entity.Spending;
 import hu.bmrk.bmoneytrackerbackend.entity.UserEntity;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.CategoryService;
@@ -89,12 +89,16 @@ public class SpendingController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<SpendingDTO> createSpending(Authentication authentication, @RequestBody SpendingDTO spending) {
+    public ResponseEntity<SpendingDTO> createSpending(Authentication authentication, @RequestBody SpendingDTO spendingDTO) {
         UserEntity user = helper.getUser(authentication);
-        spending.setUserEntity(modelMapper.map(user, UserEntityDTO.class));
-        helper.checkCategoryForUser(spending.getCategory(),spending.getUserEntity());
-        spendingService.saveSpending(modelMapper.map(spending, Spending.class));
-        return new ResponseEntity<>(spending, HttpStatus.OK);
+        Spending spending = modelMapper.map(spendingDTO, Spending.class);
+        spending.setUserEntity(user);
+
+        if(spending.getCategory().getId() == null){
+            spending.getCategory().setUserEntity(user);
+            spending.setCategory(categoryService.saveCategory(modelMapper.map(spending.getCategory(), Category.class)));
+        }
+        return new ResponseEntity<>(modelMapper.map(spendingService.saveSpending(spending), SpendingDTO.class), HttpStatus.OK);
     }
 
     @PostMapping(path = "/delete/{id}")
