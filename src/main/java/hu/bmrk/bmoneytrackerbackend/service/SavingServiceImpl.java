@@ -1,11 +1,17 @@
 package hu.bmrk.bmoneytrackerbackend.service;
 
+import hu.bmrk.bmoneytrackerbackend.entity.Category;
+import hu.bmrk.bmoneytrackerbackend.entity.DTO.SavingDTO;
 import hu.bmrk.bmoneytrackerbackend.entity.Saving;
+import hu.bmrk.bmoneytrackerbackend.entity.UserEntity;
 import hu.bmrk.bmoneytrackerbackend.repository.SavingRepository;
+import hu.bmrk.bmoneytrackerbackend.service.interfaces.CategoryService;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.SavingService;
+import hu.bmrk.bmoneytrackerbackend.util.HelperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -14,29 +20,43 @@ public class SavingServiceImpl implements SavingService {
     @Autowired
     SavingRepository savingRepository;
 
+    @Autowired
+    HelperUtil helper;
+
+    @Autowired
+    CategoryService categoryService;
+
 
     @Override
-    public Saving findFirstByIdAndUserEntity_Id(Long id, Long userId) {
-        return savingRepository.findFirstByIdAndUserEntity_Id(id, userId);
+    public SavingDTO findFirstByIdAndUserEntity_Id(Long id, Long userId) {
+        return helper.map(savingRepository.findFirstByIdAndUserEntity_Id(id, userId), SavingDTO.class);
     }
 
     @Override
-    public List<Saving> findAllByUserEntity_Id(Long userId) {
-        return savingRepository.findAllByUserEntity_IdOrderByDateFromAsc(userId);
+    public List<SavingDTO> findAllByUserEntity_IdOrderByDateFromAsc(Long userId) {
+        return helper.mapAll(savingRepository.findAllByUserEntity_IdOrderByDateFromAsc(userId), SavingDTO.class);
     }
 
     @Override
-    public List<Saving> findAllByCategory_Title(String title) {
-        return savingRepository.findAllByCategory_Title(title);
+    public List<SavingDTO> findAllByDateBetweenAndUserEntity_Id(Date timeFrom, Date timeTo, Long userId) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void deleteSavingById(Long id) {
+    public void deleteById(Long id) {
         savingRepository.deleteById(id);
     }
 
     @Override
-    public Saving saveSaving(Saving s) {
-        return savingRepository.save(s);
+    public SavingDTO save(SavingDTO savingDTO, UserEntity user) {
+
+        Saving saving = helper.map(savingDTO, Saving.class);
+        saving.setUserEntity(user);
+        if(saving.getCategory().getId() == null){
+            saving.getCategory().setUserEntity(user);
+            saving.setCategory(categoryService.saveCategory(helper.map(saving.getCategory(), Category.class)));
+        }
+
+        return helper.map(savingRepository.save(saving), SavingDTO.class);
     }
 }

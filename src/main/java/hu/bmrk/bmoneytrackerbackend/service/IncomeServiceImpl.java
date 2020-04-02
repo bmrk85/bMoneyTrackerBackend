@@ -1,8 +1,13 @@
 package hu.bmrk.bmoneytrackerbackend.service;
 
+import hu.bmrk.bmoneytrackerbackend.entity.Category;
+import hu.bmrk.bmoneytrackerbackend.entity.DTO.IncomeDTO;
 import hu.bmrk.bmoneytrackerbackend.entity.Income;
+import hu.bmrk.bmoneytrackerbackend.entity.UserEntity;
 import hu.bmrk.bmoneytrackerbackend.repository.IncomeRepository;
+import hu.bmrk.bmoneytrackerbackend.service.interfaces.CategoryService;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.IncomeService;
+import hu.bmrk.bmoneytrackerbackend.util.HelperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,33 +20,44 @@ public class IncomeServiceImpl implements IncomeService {
     @Autowired
     IncomeRepository incomeRepository;
 
+    @Autowired
+    CategoryService categoryService;
+
+    @Autowired
+    HelperUtil helper;
+
     @Override
-    public Income findFirstByIdAndUserEntity_Id(Long id, Long userId) {
-        return incomeRepository.findFirstByIdAndUserEntity_Id(id, userId);
+    public IncomeDTO findFirstByIdAndUserEntity_Id(Long id, Long userId) {
+        return helper.map(incomeRepository.findFirstByIdAndUserEntity_Id(id, userId), IncomeDTO.class);
     }
 
     @Override
-    public List<Income> findAllByUserEntity_Id(Long userId) {
-        return incomeRepository.findAllByUserEntity_Id(userId);
+    public List<IncomeDTO> findAllByUserEntity_IdOrderByDateFromAsc(Long userId) {
+        incomeRepository.save(new Income());
+        return helper.mapAll(incomeRepository.findAllByUserEntity_IdOrderByDateAsc(userId), IncomeDTO.class);
     }
 
     @Override
-    public List<Income> findAllByDateBetweenAndUserEntity_Id(Date timeFrom, Date timeTo, Long userId) {
-        return incomeRepository.findAllByDateBetweenAndUserEntity_Id(timeFrom, timeTo, userId);
+    public List<IncomeDTO> findAllByDateBetweenAndUserEntity_Id(Date timeFrom, Date timeTo, Long userId) {
+
+        return helper.mapAll(incomeRepository.findAllByDateBetweenAndUserEntity_Id(timeFrom, timeTo, userId), IncomeDTO.class);
     }
 
     @Override
-    public List<Income> findAllByCategory_Title(String title) {
-        return incomeRepository.findAllByCategory_Title(title);
-    }
-
-    @Override
-    public void deleteIncomeById(Long id) {
+    public void deleteById(Long id) {
         incomeRepository.deleteById(id);
     }
 
     @Override
-    public Income saveIncome(Income income) {
-        return incomeRepository.save(income);
+    public IncomeDTO save(IncomeDTO incomeDTO, UserEntity user) {
+
+        Income income = helper.map(incomeDTO, Income.class);
+        income.setUserEntity(user);
+        if(income.getCategory().getId() == null){
+            income.getCategory().setUserEntity(user);
+            income.setCategory(categoryService.saveCategory(helper.map(income.getCategory(), Category.class)));
+        }
+
+        return helper.map(incomeRepository.save(income), IncomeDTO.class);
     }
 }

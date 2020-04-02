@@ -1,20 +1,35 @@
 package hu.bmrk.bmoneytrackerbackend.service;
 
 import hu.bmrk.bmoneytrackerbackend.entity.DTO.CashFlowDTO;
+import hu.bmrk.bmoneytrackerbackend.entity.UserEntity;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.CashFlowService;
+import hu.bmrk.bmoneytrackerbackend.service.interfaces.IncomeService;
+import hu.bmrk.bmoneytrackerbackend.service.interfaces.SpendingService;
+import hu.bmrk.bmoneytrackerbackend.util.HelperUtil;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.xssf.usermodel.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 @Service
 public class CashFlowServiceImpl implements CashFlowService {
+
+    @Autowired
+    HelperUtil helper;
+
+    @Autowired
+    IncomeService incomeService;
+
+    @Autowired
+    SpendingService spendingService;
 
 
     @Override
@@ -104,6 +119,16 @@ public class CashFlowServiceImpl implements CashFlowService {
         stream.close();
 
         return stream.toByteArray();
+    }
+
+
+    public List<CashFlowDTO> getCashFlowForUser(Date dateFrom, Date dateTo, UserEntity user){
+
+        List<CashFlowDTO> cashFlowDTOS = helper
+                .mapAll(incomeService.findAllByDateBetweenAndUserEntity_Id(dateFrom,dateTo, user.getId()),CashFlowDTO.class);
+        cashFlowDTOS.addAll(spendingService.findAllByDateBetweenAndUserEntity_Id(dateFrom,dateTo,user.getId()));
+
+        return cashFlowDTOS;
     }
 
 

@@ -12,7 +12,7 @@ public interface SpendingRepository extends JpaRepository<Spending, Long> {
 
     Spending findFirstByIdAndUserEntity_Id(Long id, Long userId);
 
-    List<Spending> findAllByUserEntity_Id(Long userId);
+    List<Spending> findAllByUserEntity_IdOrderByDateAsc(Long userId);
 
     List<Spending> findAllByDateBetweenAndUserEntity_Id(Date timeFrom, Date timeTo, Long userId); //todo: not working
 

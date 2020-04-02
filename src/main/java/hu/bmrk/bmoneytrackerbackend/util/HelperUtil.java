@@ -8,6 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class HelperUtil {
 
@@ -21,8 +25,18 @@ public class HelperUtil {
     ModelMapper modelMapper;
 
 
+    public <D, T> D map(final T entity, Class<D> outClass){
+        return modelMapper.map(entity, outClass);
+    }
+
+    public <D, T> List<D> mapAll(final Collection<T> entityList, Class<D> outCLass) {
+        return entityList.stream()
+                .map(entity -> map(entity, outCLass))
+                .collect(Collectors.toList());
+    }
+
     public UserEntity getUser(Authentication authentication) {
-        return userEntityService.findByUsername(authentication.getName());
+        return map(userEntityService.findByUsername(authentication.getName()), UserEntity.class);
     }
 
 }

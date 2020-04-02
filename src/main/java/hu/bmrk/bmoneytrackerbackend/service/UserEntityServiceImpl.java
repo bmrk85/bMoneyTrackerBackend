@@ -1,8 +1,9 @@
 package hu.bmrk.bmoneytrackerbackend.service;
 
-import hu.bmrk.bmoneytrackerbackend.entity.UserEntity;
+import hu.bmrk.bmoneytrackerbackend.entity.DTO.UserEntityDTO;
 import hu.bmrk.bmoneytrackerbackend.repository.UserEntityRepository;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.UserEntityService;
+import hu.bmrk.bmoneytrackerbackend.util.HelperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,18 +15,21 @@ public class UserEntityServiceImpl implements UserEntityService {
     @Autowired
     private UserEntityRepository userEntityRepository;
 
+    @Autowired
+    HelperUtil helper;
+
     @Override
-    public UserEntity findFirstById(Long id) {
-        return userEntityRepository.findFirstById(id);
+    public UserEntityDTO findFirstById(Long id) {
+        return helper.map(userEntityRepository.findFirstById(id),UserEntityDTO.class);
     }
 
     @Override
-    public List<UserEntity> findAll() {
-        return userEntityRepository.findAll();
+    public List<UserEntityDTO> findAll() {
+        return helper.mapAll(userEntityRepository.findAll(), UserEntityDTO.class);
     }
 
     @Override
-    public UserEntity findByUsername(String username) {
-        return userEntityRepository.findByUsername(username);
+    public UserEntityDTO findByUsername(String username) {
+        return helper.map(userEntityRepository.findByUsername(username), UserEntityDTO.class);
     }
 }
