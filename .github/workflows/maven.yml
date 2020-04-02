@@ -21,4 +21,6 @@ jobs:
         java-version: 1.8
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+    - name: Automatic Merge
+      uses: lots0logs/gh-action-auto-merge@1.0.0
 
