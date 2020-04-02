@@ -1,12 +1,6 @@
 package hu.bmrk.bmoneytrackerbackend;
 
-import org.modelmapper.ModelMapper;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Scope;
-
-@SpringBootApplication
+/*@SpringBootApplication
 public class BmoneytrackerbackendApplication {
 
     @Bean
@@ -19,4 +13,4 @@ public class BmoneytrackerbackendApplication {
         SpringApplication.run(BmoneytrackerbackendApplication.class, args);
     }
 
-}
+}*/
