@@ -22,7 +22,7 @@ public class IncomeDTO {
 
     private String name;
 
-    @JsonIgnoreProperties({"incomes", "savings", "spendings"})
+    @JsonIgnoreProperties(value = {"incomes", "savings", "spendings"}, allowSetters = true)
     private CategoryDTO category;
 
     @Temporal(TemporalType.TIMESTAMP)

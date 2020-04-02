@@ -16,6 +16,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+
 @CrossOrigin("*")
 @RestController
 public class JwtAuthenticationController {
@@ -54,6 +56,7 @@ public class JwtAuthenticationController {
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity<?> saveUser(@RequestBody UserEntity user) { //TODO: exception handling
+        user.setRegisterDate(new Date());
         return ResponseEntity.ok(userDetailsService.save(user));
     }
 

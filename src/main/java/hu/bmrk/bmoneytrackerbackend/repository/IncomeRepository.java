@@ -12,7 +12,7 @@ public interface IncomeRepository extends JpaRepository<Income,Long> {
 
     Income findFirstByIdAndUserEntity_Id(Long id, Long userId);
 
-    List<Income> findAllByUserEntity_Id(Long userId);
+    List<Income> findAllByUserEntity_IdOrderByDateAsc(Long userId);
 
     List<Income> findAllByDateBetweenAndUserEntity_Id(Date timeFrom, Date timeTo, Long userId);
 

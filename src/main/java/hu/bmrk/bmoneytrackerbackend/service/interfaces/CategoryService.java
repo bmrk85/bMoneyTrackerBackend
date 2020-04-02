@@ -1,16 +1,16 @@
 package hu.bmrk.bmoneytrackerbackend.service.interfaces;
 
 import hu.bmrk.bmoneytrackerbackend.entity.Category;
+import hu.bmrk.bmoneytrackerbackend.entity.DTO.CategoryDTO;
+import hu.bmrk.bmoneytrackerbackend.entity.UserEntity;
 
 import java.util.List;
 
 public interface CategoryService {
 
-    List<Category> findAllByUserEntity_Id(Long id);
-
-    void deleteCategory(String title);
+    List<CategoryDTO> getCategoriesForUser(UserEntity user);
 
     Category saveCategory(Category category);
 
-    Category findCategoryByTitleAndUserEntity_Id(String title, Long id);
+
 }

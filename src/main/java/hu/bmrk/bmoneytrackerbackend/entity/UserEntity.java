@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -31,6 +32,9 @@ public class UserEntity {
     private String username;
 
     private String password;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date registerDate;
 
     @JsonManagedReference("user-spendings")
     @OneToMany(mappedBy = "userEntity")

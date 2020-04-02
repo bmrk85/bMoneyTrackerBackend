@@ -19,7 +19,14 @@ import java.util.List;
 public class Category {
 
     @Id
+    @GeneratedValue
+    private Long id;
+
     private String title;
+
+    private boolean enabled;
+
+    private String  color;
 
     @JsonBackReference("user-categories")
     @ManyToOne
@@ -36,4 +43,7 @@ public class Category {
     @JsonIgnore
     @OneToMany(mappedBy = "category")
     private List<Spending> spendings;
+
+
+
 }

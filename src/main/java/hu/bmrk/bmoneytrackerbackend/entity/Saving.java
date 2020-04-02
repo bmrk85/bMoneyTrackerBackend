@@ -2,6 +2,7 @@ package hu.bmrk.bmoneytrackerbackend.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -38,7 +39,7 @@ public class Saving {
 
     private int amount;
 
-    @JsonBackReference("category-savings")
+    @JsonIgnoreProperties(value = {"incomes", "savings", "spendings"}, allowSetters = true)
     @ManyToOne
     private Category category;
 

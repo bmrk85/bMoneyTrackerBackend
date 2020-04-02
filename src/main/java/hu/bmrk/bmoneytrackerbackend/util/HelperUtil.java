@@ -1,8 +1,5 @@
 package hu.bmrk.bmoneytrackerbackend.util;
 
-import hu.bmrk.bmoneytrackerbackend.entity.Category;
-import hu.bmrk.bmoneytrackerbackend.entity.DTO.CategoryDTO;
-import hu.bmrk.bmoneytrackerbackend.entity.DTO.UserEntityDTO;
 import hu.bmrk.bmoneytrackerbackend.entity.UserEntity;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.CategoryService;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.UserEntityService;
@@ -10,6 +7,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class HelperUtil {
@@ -23,15 +24,19 @@ public class HelperUtil {
     @Autowired
     ModelMapper modelMapper;
 
-    public void checkCategoryForUser(CategoryDTO category, UserEntityDTO user) {
-        if (categoryService.findCategoryByTitleAndUserEntity_Id(category.getTitle(), user.getId()) == null) {
-            category.setUserEntity(user);
-            categoryService.saveCategory(modelMapper.map(category, Category.class));
-        }
+
+    public <D, T> D map(final T entity, Class<D> outClass){
+        return modelMapper.map(entity, outClass);
     }
 
-    public UserEntity getUser(Authentication authentication){
-        return userEntityService.findByUsername(authentication.getName());
+    public <D, T> List<D> mapAll(final Collection<T> entityList, Class<D> outCLass) {
+        return entityList.stream()
+                .map(entity -> map(entity, outCLass))
+                .collect(Collectors.toList());
+    }
+
+    public UserEntity getUser(Authentication authentication) {
+        return map(userEntityService.findByUsername(authentication.getName()), UserEntity.class);
     }
 
 }

@@ -1,16 +1,16 @@
 package hu.bmrk.bmoneytrackerbackend.service.interfaces;
 
-import hu.bmrk.bmoneytrackerbackend.entity.UserEntity;
+import hu.bmrk.bmoneytrackerbackend.entity.DTO.UserEntityDTO;
 
 import java.util.List;
 
 public interface UserEntityService {
 
-    UserEntity findFirstById(Long id);
+    UserEntityDTO findFirstById(Long id);
 
-    List<UserEntity> findAll();
+    List<UserEntityDTO> findAll();
 
-    UserEntity findByUsername(String username);
+    UserEntityDTO findByUsername(String username);
 
 
 

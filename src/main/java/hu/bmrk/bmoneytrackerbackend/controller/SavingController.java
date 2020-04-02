@@ -1,14 +1,8 @@
 package hu.bmrk.bmoneytrackerbackend.controller;
 
 import hu.bmrk.bmoneytrackerbackend.entity.DTO.SavingDTO;
-import hu.bmrk.bmoneytrackerbackend.entity.DTO.UserEntityDTO;
-import hu.bmrk.bmoneytrackerbackend.entity.Saving;
-import hu.bmrk.bmoneytrackerbackend.entity.UserEntity;
-import hu.bmrk.bmoneytrackerbackend.service.interfaces.CategoryService;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.SavingService;
-import hu.bmrk.bmoneytrackerbackend.service.interfaces.UserEntityService;
 import hu.bmrk.bmoneytrackerbackend.util.HelperUtil;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -28,28 +21,14 @@ public class SavingController {
     SavingService savingService;
 
     @Autowired
-    ModelMapper modelMapper;
-
-    @Autowired
-    UserEntityService userEntityService;
-
-    @Autowired
-    CategoryService categoryService;
-
-    @Autowired
     HelperUtil helper;
 
     @GetMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<List<SavingDTO>> getSavings(Authentication authentication) {
-        List<SavingDTO> savingDTOS = new ArrayList<>();
-        UserEntity user = helper.getUser(authentication);
-        for (Saving s : savingService.findAllByUserEntity_Id(user.getId())) {
-            savingDTOS.add(modelMapper.map(s, SavingDTO.class));
-        }
-        return new ResponseEntity<>(savingDTOS, HttpStatus.OK);
+    public ResponseEntity<List<SavingDTO>> getSavingsForUser(Authentication authentication) {
+        return new ResponseEntity<>(savingService.findAllByUserEntity_IdOrderByDateFromAsc(helper.getUser(authentication).getId()), HttpStatus.OK);
     }
 
     @GetMapping(
@@ -58,25 +37,20 @@ public class SavingController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<SavingDTO> getSavingById(@PathVariable Long id, Authentication authentication) {
-        return new ResponseEntity<>(modelMapper.map(
-                savingService.findFirstByIdAndUserEntity_Id(id, helper.getUser(authentication).getId()), SavingDTO.class
-        ), HttpStatus.OK);
+        return new ResponseEntity<>(savingService.findFirstByIdAndUserEntity_Id(id, helper.getUser(authentication).getId()), HttpStatus.OK);
     }
 
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<SavingDTO> createSaving(@RequestBody SavingDTO saving, Authentication authentication) {
-        UserEntity user = helper.getUser(authentication);
-        saving.setUserEntity(modelMapper.map(user, UserEntityDTO.class));
-        helper.checkCategoryForUser(saving.getCategory(), saving.getUserEntity());
-        savingService.saveSaving(modelMapper.map(saving, Saving.class));
-        return new ResponseEntity<>(saving, HttpStatus.OK);
+    public ResponseEntity<SavingDTO> createSaving(@RequestBody SavingDTO savingDTO, Authentication authentication) {
+
+        return new ResponseEntity<>(savingService.save(savingDTO, helper.getUser(authentication)), HttpStatus.OK);
     }
 
     @PostMapping(path = "/delete/{id}")
     public void deleteSaving(@PathVariable Long id) {
-        savingService.deleteSavingById(id);
+        savingService.deleteById(id);
     }
 }

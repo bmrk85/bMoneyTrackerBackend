@@ -15,7 +15,14 @@ import java.util.List;
 @ToString
 public class CategoryDTO {
 
+    private Long id;
+
     private String title;
+
+    private boolean enabled;
+
+    private String color;
+
 
     @JsonBackReference("user-categories")
     private UserEntityDTO userEntity;
@@ -28,4 +35,6 @@ public class CategoryDTO {
 
     @JsonIgnore
     private List<SpendingDTO> spendings;
+
+
 }

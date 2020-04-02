@@ -2,8 +2,11 @@ package hu.bmrk.bmoneytrackerbackend.service;
 
 
 import hu.bmrk.bmoneytrackerbackend.entity.Category;
+import hu.bmrk.bmoneytrackerbackend.entity.DTO.CategoryDTO;
+import hu.bmrk.bmoneytrackerbackend.entity.UserEntity;
 import hu.bmrk.bmoneytrackerbackend.repository.CategoryRepository;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.CategoryService;
+import hu.bmrk.bmoneytrackerbackend.util.HelperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,15 +18,12 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    HelperUtil helper;
 
     @Override
-    public List<Category> findAllByUserEntity_Id(Long id) {
-        return categoryRepository.findAllByUserEntity_Id(id);
-    }
-
-    @Override
-    public void deleteCategory(String title) {
-        categoryRepository.deleteById(title);
+    public List<CategoryDTO> getCategoriesForUser(UserEntity user) {
+        return helper.mapAll(categoryRepository.findAllByUserEntity_Id(user.getId()),CategoryDTO.class);
     }
 
     @Override
@@ -31,8 +31,4 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.save(category);
     }
 
-    @Override
-    public Category findCategoryByTitleAndUserEntity_Id(String title, Long id) {
-        return categoryRepository.findCategoryByTitleAndUserEntity_Id(title, id);
-    }
 }

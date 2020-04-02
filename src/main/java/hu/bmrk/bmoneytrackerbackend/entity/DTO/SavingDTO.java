@@ -37,7 +37,7 @@ public class SavingDTO {
 
     private int amount;
 
-    @JsonIgnoreProperties({"incomes", "savings", "spendings"})
+    @JsonIgnoreProperties(value = {"incomes", "savings", "spendings"}, allowSetters = true)
     private CategoryDTO category;
 
     @JsonBackReference("user-savings")

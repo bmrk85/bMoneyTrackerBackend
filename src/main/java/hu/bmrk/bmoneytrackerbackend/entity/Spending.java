@@ -27,7 +27,7 @@ public class Spending {
 
     private String name;
 
-    @JsonIgnoreProperties({"incomes", "savings", "spendings"})
+    @JsonIgnoreProperties(value = {"incomes", "savings", "spendings"}, allowSetters = true)
     @ManyToOne
     private Category category;
 
