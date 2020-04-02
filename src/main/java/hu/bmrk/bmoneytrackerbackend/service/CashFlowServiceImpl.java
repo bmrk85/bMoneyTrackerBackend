@@ -126,7 +126,7 @@ public class CashFlowServiceImpl implements CashFlowService {
 
         List<CashFlowDTO> cashFlowDTOS = helper
                 .mapAll(incomeService.findAllByDateBetweenAndUserEntity_Id(dateFrom,dateTo, user.getId()),CashFlowDTO.class);
-        cashFlowDTOS.addAll(spendingService.findAllByDateBetweenAndUserEntity_Id(dateFrom,dateTo,user.getId()));
+        cashFlowDTOS.addAll(helper.mapAll(spendingService.findAllByDateBetweenAndUserEntity_Id(dateFrom,dateTo,user.getId()),CashFlowDTO.class));
 
         return cashFlowDTOS;
     }
