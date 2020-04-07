@@ -48,5 +48,10 @@ public class CategoryController {
         return new ResponseEntity<>(modelMapper.map(categoryService.saveCategory(category),CategoryDTO.class), HttpStatus.OK);
     }
 
+    @PostMapping(path = "/delete/{id}")
+    public void deleteCategory(@PathVariable Long id) {
+        categoryService.deleteById(id);
+    }
+
 
 }

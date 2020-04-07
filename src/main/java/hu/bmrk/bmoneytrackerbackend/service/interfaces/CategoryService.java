@@ -12,5 +12,7 @@ public interface CategoryService {
 
     Category saveCategory(Category category);
 
+    void deleteById(Long id);
+
 
 }
