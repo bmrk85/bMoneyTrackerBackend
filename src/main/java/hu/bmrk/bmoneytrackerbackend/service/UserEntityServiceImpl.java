@@ -1,12 +1,14 @@
 package hu.bmrk.bmoneytrackerbackend.service;
 
 import hu.bmrk.bmoneytrackerbackend.entity.DTO.UserEntityDTO;
+import hu.bmrk.bmoneytrackerbackend.entity.UserEntity;
 import hu.bmrk.bmoneytrackerbackend.repository.UserEntityRepository;
 import hu.bmrk.bmoneytrackerbackend.service.interfaces.UserEntityService;
 import hu.bmrk.bmoneytrackerbackend.util.HelperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -30,6 +32,7 @@ public class UserEntityServiceImpl implements UserEntityService {
 
     @Override
     public UserEntityDTO findByUsername(String username) {
-        return helper.map(userEntityRepository.findByUsername(username), UserEntityDTO.class);
+        UserEntity user = userEntityRepository.findByUsername(username).orElseThrow(EntityNotFoundException::new);
+        return helper.map(user, UserEntityDTO.class);
     }
 }

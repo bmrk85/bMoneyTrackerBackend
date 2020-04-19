@@ -6,11 +6,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface IncomeRepository extends JpaRepository<Income,Long> {
 
-    Income findFirstByIdAndUserEntity_Id(Long id, Long userId);
+    Optional<Income> findFirstByIdAndUserEntity_Id(Long id, Long userId);
 
     List<Income> findAllByUserEntity_IdOrderByDateAsc(Long userId);
 

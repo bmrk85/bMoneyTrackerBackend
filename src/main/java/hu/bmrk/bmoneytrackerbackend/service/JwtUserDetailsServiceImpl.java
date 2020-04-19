@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Optional;
 
 @Service
 public class JwtUserDetailsServiceImpl implements UserDetailsService {
@@ -24,11 +25,11 @@ public class JwtUserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-        UserEntity user = userEntityRepository.findByUsername(name);
-        if(user == null){
+        Optional<UserEntity> user = userEntityRepository.findByUsername(name);
+        if(!user.isPresent()){
             throw new UsernameNotFoundException("User not found with these credentials.");
         }else{
-            return new User(user.getUsername(), user.getPassword(), Collections.emptyList());//TODO: role mapping
+            return new User(user.get().getUsername(), user.get().getPassword(), Collections.emptyList());//TODO: role mapping
         }
     }
 

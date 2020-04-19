@@ -11,6 +11,7 @@ import hu.bmrk.bmoneytrackerbackend.util.HelperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Date;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class SavingServiceImpl implements SavingService {
 
     @Override
     public SavingDTO findFirstByIdAndUserEntity_Id(Long id, Long userId) {
-        return helper.map(savingRepository.findFirstByIdAndUserEntity_Id(id, userId), SavingDTO.class);
+        return helper.map(savingRepository.findFirstByIdAndUserEntity_Id(id, userId).orElseThrow(EntityNotFoundException::new), SavingDTO.class);
     }
 
     @Override

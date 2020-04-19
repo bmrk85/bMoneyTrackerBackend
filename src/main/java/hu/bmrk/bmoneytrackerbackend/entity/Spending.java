@@ -4,10 +4,7 @@ package hu.bmrk.bmoneytrackerbackend.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -18,6 +15,7 @@ import java.util.Date;
 @NoArgsConstructor
 @ToString
 @Table(name="spendings")
+@Builder
 public class Spending {
 
 

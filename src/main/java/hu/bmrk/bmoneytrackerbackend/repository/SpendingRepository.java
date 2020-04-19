@@ -6,11 +6,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface SpendingRepository extends JpaRepository<Spending, Long> {
 
-    Spending findFirstByIdAndUserEntity_Id(Long id, Long userId);
+    Optional<Spending> findFirstByIdAndUserEntity_Id(Long id, Long userId);
 
     List<Spending> findAllByUserEntity_IdOrderByDateAsc(Long userId);
 
