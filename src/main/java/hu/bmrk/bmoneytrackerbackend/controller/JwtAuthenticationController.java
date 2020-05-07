@@ -8,6 +8,7 @@ import hu.bmrk.bmoneytrackerbackend.service.interfaces.UserEntityService;
 import hu.bmrk.bmoneytrackerbackend.util.JwtTokenUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -16,6 +17,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Date;
 
 @CrossOrigin("*")
@@ -55,9 +57,14 @@ public class JwtAuthenticationController {
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public ResponseEntity<?> saveUser(@RequestBody UserEntity user) { //TODO: exception handling
-        user.setRegisterDate(new Date());
-        return ResponseEntity.ok(userDetailsService.save(user));
+    public ResponseEntity<?> saveUser(@RequestBody UserEntity user) {
+        try{
+            userEntityService.findByUsername(user.getUsername());
+            return new ResponseEntity<>("Username already taken", HttpStatus.CONFLICT);
+        }catch (EntityNotFoundException e){
+            user.setRegisterDate(new Date());
+            return ResponseEntity.ok(userDetailsService.save(user));
+        }
     }
 
 

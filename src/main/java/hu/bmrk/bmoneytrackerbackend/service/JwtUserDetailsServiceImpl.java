@@ -26,14 +26,14 @@ public class JwtUserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
         Optional<UserEntity> user = userEntityRepository.findByUsername(name);
-        if(!user.isPresent()){
+        if (!user.isPresent()) {
             throw new UsernameNotFoundException("User not found with these credentials.");
-        }else{
+        } else {
             return new User(user.get().getUsername(), user.get().getPassword(), Collections.emptyList());//TODO: role mapping
         }
     }
 
-    public UserEntity save(UserEntity user){
+    public UserEntity save(UserEntity user) {
         UserEntity newUser = new UserEntity();
         newUser.setUsername(user.getUsername());
         newUser.setPassword(passwordEncoder.encode(user.getPassword()));
